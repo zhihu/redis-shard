@@ -5,17 +5,23 @@ according to this article http://antirez.com/post/redis-presharding.html .
 
 Useage
 ==============
-Please see the `examples` directory for detail.
+Creating a hash ring with multiple servers,By default the hash ring uses a crc32
+hashing algorithm on the server's ``name`` config.You can define the name anything
+as you like,but it must be unique.
+
+I don't want to bind the hashring with ipaddress,because if I do some master/slave switches,
+I only change the ipaddress related config, the ``name`` is kept,so the hashring's order
+is kept.
 
 >>> from redis_shard.shard import RedisShardAPI
->>> clients = [
-    ...    {'host':'127.0.0.1','port':10000,'db':0},
-    ...    {'host':'127.0.0.1','port':11000,'db':0},
-    ...    {'host':'127.0.0.1','port':12000,'db':0},
-    ...    {'host':'127.0.0.1','port':13000,'db':0},
+>>> servers = [
+    ...    {'name':'server1','host':'127.0.0.1','port':10000,'db':0},
+    ...    {'name':'server2','host':'127.0.0.1','port':11000,'db':0},
+    ...    {'name':'server3','host':'127.0.0.1','port':12000,'db':0},
+    ...    {'name':'127.0.0.1:13000','host':'127.0.0.1','port':13000,'db':0},
     ...    ]
 >>> 
->>> client = RedisShardAPI(clients)
+>>> client = RedisShardAPI(servers)
 >>> client.set('test',1)
 >>> print client.get('test')
 >>> client.zadd('testset','first',1)

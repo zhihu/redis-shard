@@ -20,7 +20,7 @@ setup(
         "Change History\n" +
         "==============\n\n" +
         read_file("CHANGES.rst")),
-    version = "0.1",
+    version = "0.1.1",
     packages = ["redis_shard"],
     install_requires=['redis',],
     classifiers = [

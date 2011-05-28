@@ -9,16 +9,22 @@ _findhash = re.compile('.+\{(.*)\}.*', re.I)
 
 class RedisShardAPI(object):
 
-    def __init__(self,clients):
+    def __init__(self,servers):
         self.pool = redis.ConnectionPool()
         nodes = []
-        for client in clients:
-            conn = redis.Redis(host=client['host'], port=client['port'], db=client['db'],connection_pool=self.pool)
-            nodes.append(conn)
+        self.connections = {}
+        for server in servers:
+            conn = redis.Redis(host=server['host'], port=server['port'], db=server['db'],connection_pool=self.pool)
+            name = server['name']
+            if name in self.connections:
+                raise ValueError("server's name config must be unique")
+            self.connections[name] = conn
+            nodes.append(name)
         self.ring = HashRing(nodes)
 
-    def get_node(self, key):
-        return self.ring.get_node(key)
+    def get_server(self, key):
+        name = self.ring.get_node(key)
+        return self.connections[name]
 
     def __wrap(self, method, *args, **kwargs):
         try:
@@ -29,8 +35,8 @@ class RedisShardAPI(object):
         g = _findhash.match(key)
         if g != None and len(g.groups()) > 0:
             key = g.groups()[0]
-        node = self.get_node(key)
-        f = getattr(node, method)
+        server = self.get_server(key)
+        f = getattr(server, method)
         return f(*args, **kwargs)
 
     def __getattr__(self, method):
