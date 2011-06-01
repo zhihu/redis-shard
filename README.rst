@@ -10,7 +10,7 @@ hashing algorithm on the server's ``name`` config.You can define the name anythi
 as you like,but it must be unique.
 
 I don't want to bind the hashring with ipaddress,because if I do some master/slave switches,
-I only change the ipaddress related config, the ``name`` is kept,so the hashring's order
+I can only change the ipaddress related config. The ``name`` is kept,so the hashring's order
 is kept.
 
 >>> from redis_shard.shard import RedisShardAPI
