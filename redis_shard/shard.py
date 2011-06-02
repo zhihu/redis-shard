@@ -51,7 +51,7 @@ class RedisShardAPI(object):
             "lrem", "sadd", "srem",
             "sismember", "smembers",
             "zadd", "zrem", "zincr",
-            "zrange", "zrevrange", "zrangebyscore",
+            "zrange", "zrevrange", "zrangebyscore","zremrangebyrank",
             "zremrangebyscore", "zcard", "zscore",
             "hget", "hset", "hdel", "hincrby", "hlen",
             "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
