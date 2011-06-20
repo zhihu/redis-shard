@@ -1,3 +1,7 @@
+0.1.3 (2011-06-20)
+------------------
+support 2.4.X version of redis-py
+
 0.1.2 (2011-06-01)
 ------------------
 add MANIFEST.in file

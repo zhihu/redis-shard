@@ -10,9 +10,13 @@ _findhash = re.compile('.+\{(.*)\}.*', re.I)
 class RedisShardAPI(object):
 
     def __init__(self,servers):
-        self.pool = redis.ConnectionPool()
+        VERSION = tuple(map(int, redis.__version__.split('.')))
         nodes = []
         self.connections = {}
+        if VERSION < (2,4,0):
+            self.pool = redis.ConnectionPool()
+        else:
+            self.pool = None
         for server in servers:
             conn = redis.Redis(host=server['host'], port=server['port'], db=server['db'],connection_pool=self.pool)
             name = server['name']
