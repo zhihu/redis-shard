@@ -11,7 +11,7 @@ class RedisShardAPI(object):
 
     def __init__(self,servers):
         VERSION = tuple(map(int, redis.__version__.split('.')))
-        nodes = []
+        self.nodes = []
         self.connections = {}
         if VERSION < (2,4,0):
             self.pool = redis.ConnectionPool()
@@ -23,8 +23,8 @@ class RedisShardAPI(object):
             if name in self.connections:
                 raise ValueError("server's name config must be unique")
             self.connections[name] = conn
-            nodes.append(name)
-        self.ring = HashRing(nodes)
+            self.nodes.append(name)
+        self.ring = HashRing(self.nodes)
 
     def get_server(self, key):
         name = self.ring.get_node(key)
@@ -65,3 +65,14 @@ class RedisShardAPI(object):
         else:
             raise NotImplementedError("method '%s' cannot be sharded" % method)
 
+
+    #########################################
+    ###  some methods implement as needed ###
+    ########################################
+
+    def keys(self,key):
+        _keys = []
+        for node in self.nodes:
+            server = self.connections[node]
+            _keys.extend(server.keys(key))
+        return _keys
