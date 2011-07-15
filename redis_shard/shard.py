@@ -50,7 +50,7 @@ class RedisShardAPI(object):
             "incr", "decr", "exists",
             "delete", "get_type", "rename",
             "expire", "ttl", "push",
-            "llen", "lrange", "ltrim",
+            "llen", "lrange", "ltrim","lpush","lpop",
             "lindex", "pop", "lset",
             "lrem", "sadd", "srem",
             "sismember", "smembers",

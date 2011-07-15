@@ -9,6 +9,8 @@ print client.get('test')
 client.zadd('testset','first',1)
 client.zadd('testset','second',2)
 print client.zrange('testset',0,-1)
+print client.zrank('testset','second')
+print client.zrank('testset2','second')
 
 client.set('foo',2)
 client.set('a{foo}',5)
