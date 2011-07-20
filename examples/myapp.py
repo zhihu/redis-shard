@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from redis_shard.shard import RedisShardAPI
 from config import servers
+import time
 
 client = RedisShardAPI(servers)
 client.set('test',1)
@@ -24,3 +25,10 @@ print client.get_server_name('c{foo}')
 print client.get_server_name('{foo}d')
 print client.get_server_name('{foo}e')
 print client.get_server_name('e{foo}f')
+t0 = time.time()
+print client.tag_keys('*{foo}*')
+t1 = time.time()
+print t1-t0
+print client.keys('*{foo}*')
+t2 = time.time()
+print t2-t1

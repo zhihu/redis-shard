@@ -80,3 +80,7 @@ class RedisShardAPI(object):
             server = self.connections[node]
             _keys.extend(server.keys(key))
         return _keys
+
+    def tag_keys(self,key):
+        server = self.get_server(key)
+        return server.keys(key)

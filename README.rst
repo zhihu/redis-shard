@@ -42,3 +42,8 @@ see article `http://antirez.com/post/redis-presharding.html` for detail.
 >>> print client.get_server_name('foo') == client.get_server_name('a{foo}') == client.get_server_name('{foo}d') \
 ... == client.get_server_name('d{foo}e')
 
+I also added an `tag_keys` method,which is more quickly than default `keys` method,because it only look 
+one machine.
+
+>>> client.tag_keys('*{foo}*') == client.keys('*{foo}*')
+
