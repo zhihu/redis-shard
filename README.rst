@@ -37,4 +37,8 @@ see article `http://antirez.com/post/redis-presharding.html` for detail.
 >>> client.set('foo',2)
 >>> client.set('a{foo}',5)
 >>> client.set('b{foo}',5)
->>> client.set('c{foo}',5)
+>>> client.set('{foo}d',5)
+>>> client.set('d{foo}e',5)
+>>> print client.get_server_name('foo') == client.get_server_name('a{foo}') == client.get_server_name('{foo}d') \
+... == client.get_server_name('d{foo}e')
+

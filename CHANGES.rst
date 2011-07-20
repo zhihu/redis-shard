@@ -1,3 +1,8 @@
+0.1.4 (2011-07-20)
+------------------
+modify hash key algor,support suffix match,thks to dkong 
+support more redis methods,include `keys`.
+
 0.1.3 (2011-06-20)
 ------------------
 support 2.4.X version of redis-py

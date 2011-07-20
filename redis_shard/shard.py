@@ -5,7 +5,7 @@ import redis
 from hashring import HashRing
 import functools
 
-_findhash = re.compile('.+\{(.*)\}.*', re.I)
+_findhash = re.compile('.*\{(.*)\}.*', re.I)
 
 class RedisShardAPI(object):
 
@@ -26,8 +26,15 @@ class RedisShardAPI(object):
             self.nodes.append(name)
         self.ring = HashRing(self.nodes)
 
-    def get_server(self, key):
+    def get_server_name(self, key):
+        g = _findhash.match(key)
+        if g != None and len(g.groups()) > 0:
+            key = g.groups()[0]
         name = self.ring.get_node(key)
+        return name
+
+    def get_server(self,key):
+        name = self.get_server_name(key)
         return self.connections[name]
 
     def __wrap(self, method, *args, **kwargs):
@@ -36,9 +43,6 @@ class RedisShardAPI(object):
             assert isinstance(key, basestring)
         except:
             raise ValueError("method '%s' requires a key param as the first argument" % method)
-        g = _findhash.match(key)
-        if g != None and len(g.groups()) > 0:
-            key = g.groups()[0]
         server = self.get_server(key)
         f = getattr(server, method)
         return f(*args, **kwargs)
