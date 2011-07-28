@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from redis_shard.shard import RedisShardAPI
-from config import servers
+from dict_config import servers
 import time
 
 client = RedisShardAPI(servers)

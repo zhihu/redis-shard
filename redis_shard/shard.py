@@ -17,13 +17,24 @@ class RedisShardAPI(object):
             self.pool = redis.ConnectionPool()
         else:
             self.pool = None
-        for server in servers:
-            conn = redis.Redis(host=server['host'], port=server['port'], db=server['db'],connection_pool=self.pool)
-            name = server['name']
-            if name in self.connections:
-                raise ValueError("server's name config must be unique")
-            self.connections[name] = conn
-            self.nodes.append(name)
+        if isinstance(servers,list):
+            for server in servers:
+                conn = redis.Redis(host=server['host'], port=server['port'], db=server['db'],connection_pool=self.pool)
+                name = server['name']
+                if name in self.connections:
+                    raise ValueError("server's name config must be unique")
+                self.connections[name] = conn
+                self.nodes.append(name)
+        elif isinstance(servers,dict):
+            for server_name,server in servers.items():
+                conn = redis.Redis(host=server['host'], port=server['port'], db=server['db'],connection_pool=self.pool)
+                name = server_name
+                if name in self.connections:
+                    raise ValueError("server's name config must be unique")
+                self.connections[name] = conn
+                self.nodes.append(name)
+        else:
+            raise ValueError("server's config must be list or dict")
         self.ring = HashRing(self.nodes)
 
     def get_server_name(self, key):
