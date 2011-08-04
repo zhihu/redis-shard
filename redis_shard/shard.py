@@ -74,7 +74,7 @@ class RedisShardAPI(object):
             "zremrangebyscore", "zcard", "zscore",
             "hget", "hset", "hdel", "hincrby", "hlen",
             "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
-            "publish",
+            "publish","brpop","blpop","lpush","rpush",
             ]:
             return functools.partial(self.__wrap, method)
         else:
