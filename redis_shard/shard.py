@@ -74,7 +74,7 @@ class RedisShardAPI(object):
             "zremrangebyscore", "zcard", "zscore",
             "hget", "hset", "hdel", "hincrby", "hlen",
             "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
-            "publish","brpop","blpop","lpush","rpush",
+            "publish","rpush","rpop"
             ]:
             return functools.partial(self.__wrap, method)
         else:
@@ -84,6 +84,18 @@ class RedisShardAPI(object):
     #########################################
     ###  some methods implement as needed ###
     ########################################
+
+    def brpop(self,key, timeout=0):
+        if not isinstance(key, basestring):
+            raise NotImplementedError("The key must be single string;mutiple keys cannot be sharded")
+        server = self.get_server(key)
+        return server.brpop(key,timeout)
+
+    def blpop(self,key, timeout=0):
+        if not isinstance(key, basestring):
+            raise NotImplementedError("The key must be single string;mutiple keys cannot be sharded")
+        server = self.get_server(key)
+        return server.blpop(key,timeout)
 
     def keys(self,key):
         _keys = []
