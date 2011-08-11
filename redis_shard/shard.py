@@ -85,8 +85,8 @@ class RedisShardAPI(object):
         server = self.get_server(key)
         if method == "rpush_in":
             method = "rpush"
-        elif method == "lpop_in":
-            method = "lpop"
+        elif method == "blpop_in":
+            method = "blpop"
         else:
             print "you can't be here"
         f = getattr(server, method)
@@ -113,7 +113,7 @@ class RedisShardAPI(object):
             return functools.partial(self.__wrap, method)
         elif method in ["hget_in", "hset_in"]:
             return functools.partial(self.__hop_in, method)
-        elif method in ["lpop_in", "rpush_in"]:
+        elif method in ["blpop_in", "rpush_in"]:
             return functools.partial(self.__qop_in, method)
         else:
             raise NotImplementedError("method '%s' cannot be sharded" % method)
