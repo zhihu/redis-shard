@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from redis_shard.shard import RedisShardAPI
-from dict_config import servers
+from config import servers
 import time
 
 client = RedisShardAPI(servers)
@@ -32,3 +32,9 @@ print t1-t0
 print client.keys('*{foo}*')
 t2 = time.time()
 print t2-t1
+
+client.hset_in("test", "key", "value")
+print client.hget_in("test","key")
+client.rpush_in("testq", "value")
+print client.lpop_in("testq")
+
