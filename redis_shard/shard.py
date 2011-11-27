@@ -145,3 +145,8 @@ class RedisShardAPI(object):
     def tag_keys(self,key):
         server = self.get_server(key)
         return server.keys(key)
+
+    def flushdb():
+        for node in self.nodes:
+            server = self.connections[node]
+            server.flushdb()
