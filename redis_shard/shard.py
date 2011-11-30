@@ -58,6 +58,18 @@ class RedisShardAPI(object):
         f = getattr(server, method)
         return f(*args, **kwargs)
 
+    def __wrap_tag(self,method,*args,**kwargs):
+        key = args[0]
+        if isinstance(key, basestring) and '{' in key:
+            server = self.get_server(key)
+        elif isinstance(key, list) and '{' in key[0]:
+            server = self.get_server(key[0])
+        else:
+            raise ValueError("method '%s' requires tag key params as its arguments" % method)
+        method = method.lstrip("tag_")
+        f = getattr(server, method)
+        return f(*args, **kwargs)
+
     def __hop_in(self, method, *args, **kwargs):
         '''
         使用field作为查询hashring的key
@@ -111,6 +123,8 @@ class RedisShardAPI(object):
             "publish","rpush","rpop"
             ]:
             return functools.partial(self.__wrap, method)
+        elif method.startswith("tag_"):
+            return functools.partial(self.__wrap_tag, method)
         elif method in ["hget_in", "hset_in"]:
             return functools.partial(self.__hop_in, method)
         elif method in ["blpop_in", "rpush_in"]:
@@ -141,10 +155,6 @@ class RedisShardAPI(object):
             server = self.connections[node]
             _keys.extend(server.keys(key))
         return _keys
-
-    def tag_keys(self,key):
-        server = self.get_server(key)
-        return server.keys(key)
 
     def flushdb(self):
         for node in self.nodes:

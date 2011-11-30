@@ -33,8 +33,5 @@ print client.keys('*{foo}*')
 t2 = time.time()
 print t2-t1
 
-client.hset_in("test", "key", "value")
-print client.hget_in("test","key")
-client.rpush_in("testq", "value")
-print client.lpop_in("testq")
-
+print client.tag_mget('a{foo}','b{foo}','{foo}d')
+print client.tag_mget(['a{foo}','b{foo}','{foo}d'])
