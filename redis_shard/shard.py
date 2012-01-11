@@ -84,6 +84,8 @@ class RedisShardAPI(object):
             method = "hget"
         elif method == "hset_in":
             method = "hset"
+        elif method == "hdel_in":
+            method = "hdel"
         else:
             print "you can't be here"
         f = getattr(server, method)
@@ -125,7 +127,7 @@ class RedisShardAPI(object):
             return functools.partial(self.__wrap, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)
-        elif method in ["hget_in", "hset_in"]:
+        elif method in ["hget_in", "hset_in", "hdel_in"]:
             return functools.partial(self.__hop_in, method)
         elif method in ["blpop_in", "rpush_in"]:
             return functools.partial(self.__qop_in, method)
