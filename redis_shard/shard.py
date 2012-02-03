@@ -162,3 +162,11 @@ class RedisShardAPI(object):
         for node in self.nodes:
             server = self.connections[node]
             server.flushdb()
+
+    def hgetall_in(self, key):
+        result = []
+        for node in self.nodes:
+            server = self.connections[node]
+            result.extend(server.hgetall(key))
+        return result
+
