@@ -76,8 +76,11 @@ class RedisShardAPI(object):
         '''
         使用field作为查询hashring的key
         '''
-        try:
+        if not isinstance(args[1], str):
+            key = str(args[1])
+        else:
             key = args[1]
+        try:
             assert isinstance(key, basestring)
         except:
             raise ValueError("method '%s' requires a key param as the second argument" % method)
