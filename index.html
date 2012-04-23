@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Redis-shard by youngking</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Redis-shard</h1>
+        <p>Redis sharding api</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/youngking/redis-shard" class="button fork"><strong>Fork On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/youngking/redis-shard/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/youngking/redis-shard/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>Redis Shard </h1>
+
+<p>A redis sharding api. Sharding is done based on the CRC32 checksum of a key or key tag ("key{key_tag}"),
+according to this article <a href="http://antirez.com/post/redis-presharding.html">http://antirez.com/post/redis-presharding.html</a> .</p>
+
+<p>The source code is locate at <code>github &lt;https://github.com/youngking/redis-shard&gt;</code>_ .</p>
+
+<h1>Useage</h1>
+
+<p>Creating a hash ring with multiple servers,By default the hash ring uses a crc32
+hashing algorithm on the server's <code>name</code> config.You can define the name anything
+as you like,but it must be unique.</p>
+
+<p>I don't want to bind the hashring with ipaddress,because if I do some master/slave switches,
+I can only change the ipaddress related config. The <code>name</code> is kept,so the hashring's order
+is kept.</p>
+
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from redis_shard.shard import RedisShardAPI
+servers = [
+    ...    {'name':'server1','host':'127.0.0.1','port':10000,'db':0},
+    ...    {'name':'server2','host':'127.0.0.1','port':11000,'db':0},
+    ...    {'name':'server3','host':'127.0.0.1','port':12000,'db':0},
+    ...    {'name':'127.0.0.1:13000','host':'127.0.0.1','port':13000,'db':0},
+    ...    ]</p>
+
+<p>client = RedisShardAPI(servers)
+client.set('test',1)
+print client.get('test')
+client.zadd('testset','first',1)
+client.zadd('testset','second',2)
+print client.zrange('testset',0,-1)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+
+<h2>Hash tags</h2>
+
+<p>see article <code>http://antirez.com/post/redis-presharding.html</code> for detail.</p>
+
+<blockquote>
+<blockquote>
+<blockquote>
+<p>client.set('foo',2)
+client.set('a{foo}',5)
+client.set('b{foo}',5)
+client.set('{foo}d',5)
+client.set('d{foo}e',5)
+print client.get_server_name('foo') == client.get_server_name('a{foo}') == client.get_server_name('{foo}d') \
+... == client.get_server_name('d{foo}e')</p>
+</blockquote>
+</blockquote>
+</blockquote>
+
+<p>I also added an <code>tag_keys</code> method,which is more quickly than default <code>keys</code> method,because it only look 
+one machine.</p>
+
+<blockquote>
+<blockquote>
+<blockquote>
+<p>client.tag_keys('<em>{foo}</em>') == client.keys('<em>{foo}</em>')</p>
+</blockquote>
+</blockquote>
+</blockquote>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/youngking">youngking</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
