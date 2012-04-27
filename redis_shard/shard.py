@@ -175,3 +175,17 @@ class RedisShardAPI(object):
             result.update(server.hgetall(key))
         return result
 
+    def hmget_in(self, key, fields):
+        result = {}
+        node_field = {}
+        for field in fields:
+            node = self.get_server_name(field)
+            node_field.setdefault(node, [])
+            node_field[node].append(field)
+
+        for node, field_list in node_field.items():
+            server = self.connections[node]
+            value = server.hmget(key, field_list)
+            for i in range(len(field_list)):
+                result[field_list[i]]=value[i]
+        return result
