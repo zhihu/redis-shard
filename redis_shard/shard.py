@@ -120,7 +120,7 @@ class RedisShardAPI(object):
             "expire", "ttl", "push",
             "llen", "lrange", "ltrim","lpush","lpop",
             "lindex", "pop", "lset",
-            "lrem", "sadd", "srem",
+            "lrem", "sadd", "srem","scard",
             "sismember", "smembers",
             "zadd", "zrem", "zincr","zrank",
             "zrange", "zrevrange", "zrangebyscore","zremrangebyrank","zrevrangebyscore",
