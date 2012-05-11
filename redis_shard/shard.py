@@ -117,7 +117,7 @@ class RedisShardAPI(object):
             "setnx", "setex",
             "incr", "decr", "exists",
             "delete", "get_type", "type", "rename",
-            "expire", "ttl", "push",
+            "expire", "ttl", "push","persist",
             "llen", "lrange", "ltrim","lpush","lpop",
             "lindex", "pop", "lset",
             "lrem", "sadd", "srem","scard",
