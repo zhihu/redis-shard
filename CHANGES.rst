@@ -1,3 +1,7 @@
+0.1.5 (2012-07-16)
+-------------------
+Add many new methods, support socket_timeout and password
+
 0.1.4 (2011-07-20)
 ------------------
 modify hash key algor,support suffix match,thks to dkong 
