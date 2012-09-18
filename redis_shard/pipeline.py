@@ -1,6 +1,7 @@
 
 import functools
 
+
 class Pipeline(object):
     def __init__(self, shard_api):
         self.shard_api = shard_api
@@ -8,7 +9,7 @@ class Pipeline(object):
 
     def get_pipeline(self, key):
         name = self.shard_api.get_server_name(key)
-        if not self.pipelines.has_key(name):
+        if name not in self.pipelines:
             self.pipelines[name] = self.shard_api.connections[name].pipeline()
         return self.pipelines[name]
 
@@ -80,18 +81,18 @@ class Pipeline(object):
             "setnx", "setex",
             "incr", "decr", "exists",
             "delete", "get_type", "type", "rename",
-            "expire", "ttl", "push","persist",
-            "llen", "lrange", "ltrim","lpush","lpop",
+            "expire", "ttl", "push", "persist",
+            "llen", "lrange", "ltrim", "lpush", "lpop",
             "lindex", "pop", "lset",
-            "lrem", "sadd", "srem","scard",
+            "lrem", "sadd", "srem", "scard",
             "sismember", "smembers",
-            "zadd", "zrem", "zincr","zrank",
-            "zrange", "zrevrange", "zrangebyscore","zremrangebyrank","zrevrangebyscore",
-            "zremrangebyscore", "zcard", "zscore","zcount",
+            "zadd", "zrem", "zincr", "zincrby", "zrank",
+            "zrange", "zrevrange", "zrangebyscore", "zremrangebyrank", "zrevrangebyscore",
+            "zremrangebyscore", "zcard", "zscore", "zcount",
             "hget", "hset", "hdel", "hincrby", "hlen",
             "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
-            "publish","rpush","rpop"
-            ]:
+            "publish", "rpush", "rpop"
+        ]:
             return functools.partial(self.__wrap, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)
@@ -100,5 +101,5 @@ class Pipeline(object):
         elif method in ["blpop_in", "rpush_in"]:
             return functools.partial(self.__qop_in, method)
         else:
-            raise NotImplementedError("method '%s' cannot be pipelined" % method)
-
+            raise NotImplementedError(
+                "method '%s' cannot be pipelined" % method)

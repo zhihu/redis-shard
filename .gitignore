@@ -1,6 +1,9 @@
 *.pyc
 build
 *.egg-info
+*.egg
 dist
 *.swp
 tags
+local_config.py
+local_settings.py
