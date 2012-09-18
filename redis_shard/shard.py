@@ -5,6 +5,7 @@ import redis
 from redis.client import Lock
 from hashring import HashRing
 import functools
+from pipeline import Pipeline
 
 _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
@@ -138,7 +139,7 @@ class RedisShardAPI(object):
         elif method in ["blpop_in", "rpush_in"]:
             return functools.partial(self.__qop_in, method)
         else:
-            raise NotImplementedError("method '%s' cannot be sharded" % method)
+            raise NotImplementedError("method '%s' cannot be pipelined" % method)
 
 
     #########################################
@@ -204,3 +205,6 @@ class RedisShardAPI(object):
         holding the lock.
         """
         return Lock(self, name, timeout=timeout, sleep=sleep)
+
+    def pipeline(self):
+        return Pipeline(self)
