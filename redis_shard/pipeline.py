@@ -100,5 +100,5 @@ class Pipeline(object):
         elif method in ["blpop_in", "rpush_in"]:
             return functools.partial(self.__qop_in, method)
         else:
-            raise NotImplementedError("method '%s' cannot be sharded" % method)
+            raise NotImplementedError("method '%s' cannot be pipelined" % method)
 
