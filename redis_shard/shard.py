@@ -5,32 +5,38 @@ import redis
 from redis.client import Lock
 from hashring import HashRing
 import functools
+from pipeline import Pipeline
 
 _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
+
 class RedisShardAPI(object):
 
-    def __init__(self,servers):
+    def __init__(self, servers):
         VERSION = tuple(map(int, redis.__version__.split('.')))
         self.nodes = []
         self.connections = {}
-        if VERSION < (2,4,0):
+        if VERSION < (2, 4, 0):
             self.pool = redis.ConnectionPool()
         else:
             self.pool = None
-        if isinstance(servers,list):
+        if isinstance(servers, list):
             for server in servers:
-                conn = redis.Redis(host=server['host'], port=server['port'], db=server['db'],connection_pool=self.pool,
-                                   password=server.get('password'), socket_timeout=server.get('socket_timeout'))
+                conn = redis.Redis(
+                    host=server['host'], port=server[
+                        'port'], db=server['db'], connection_pool=self.pool,
+                    password=server.get('password'), socket_timeout=server.get('socket_timeout'))
                 name = server['name']
                 if name in self.connections:
                     raise ValueError("server's name config must be unique")
                 self.connections[name] = conn
                 self.nodes.append(name)
-        elif isinstance(servers,dict):
-            for server_name,server in servers.items():
-                conn = redis.Redis(host=server['host'], port=server['port'], db=server['db'],connection_pool=self.pool,
-                                   password=server.get('password'), socket_timeout=server.get('socket_timeout'))
+        elif isinstance(servers, dict):
+            for server_name, server in servers.items():
+                conn = redis.Redis(
+                    host=server['host'], port=server[
+                        'port'], db=server['db'], connection_pool=self.pool,
+                    password=server.get('password'), socket_timeout=server.get('socket_timeout'))
                 name = server_name
                 if name in self.connections:
                     raise ValueError("server's name config must be unique")
@@ -42,12 +48,12 @@ class RedisShardAPI(object):
 
     def get_server_name(self, key):
         g = _findhash.match(key)
-        if g != None and len(g.groups()) > 0:
+        if g is not None and len(g.groups()) > 0:
             key = g.groups()[0]
         name = self.ring.get_node(key)
         return name
 
-    def get_server(self,key):
+    def get_server(self, key):
         name = self.get_server_name(key)
         return self.connections[name]
 
@@ -61,7 +67,7 @@ class RedisShardAPI(object):
         f = getattr(server, method)
         return f(*args, **kwargs)
 
-    def __wrap_tag(self,method,*args,**kwargs):
+    def __wrap_tag(self, method, *args, **kwargs):
         key = args[0]
         if isinstance(key, basestring) and '{' in key:
             server = self.get_server(key)
@@ -96,11 +102,11 @@ class RedisShardAPI(object):
             print "you can't be here"
         f = getattr(server, method)
         return f(*args, **kwargs)
-        
+
     def __qop_in(self, method, *args, **kwargs):
         '''
         指定key值所对应的hashring上的一个节点作为队列服务器
-        '''    
+        '''
         key = "queue"
         server = self.get_server(key)
         if method == "rpush_in":
@@ -111,25 +117,25 @@ class RedisShardAPI(object):
             print "you can't be here"
         f = getattr(server, method)
         return f(*args, **kwargs)
-        
+
     def __getattr__(self, method):
         if method in [
             "get", "set", "getset",
             "setnx", "setex",
             "incr", "decr", "exists",
             "delete", "get_type", "type", "rename",
-            "expire", "ttl", "push","persist",
-            "llen", "lrange", "ltrim","lpush","lpop",
+            "expire", "ttl", "push", "persist",
+            "llen", "lrange", "ltrim", "lpush", "lpop",
             "lindex", "pop", "lset",
-            "lrem", "sadd", "srem","scard",
+            "lrem", "sadd", "srem", "scard",
             "sismember", "smembers",
-            "zadd", "zrem", "zincr","zrank",
-            "zrange", "zrevrange", "zrangebyscore","zremrangebyrank","zrevrangebyscore",
-            "zremrangebyscore", "zcard", "zscore","zcount",
+            "zadd", "zrem", "zincrby", "zincr", "zrank",
+            "zrange", "zrevrange", "zrangebyscore", "zremrangebyrank", "zrevrangebyscore",
+            "zremrangebyscore", "zcard", "zscore", "zcount",
             "hget", "hset", "hdel", "hincrby", "hlen",
             "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
-            "publish","rpush","rpop"
-            ]:
+            "publish", "rpush", "rpop"
+        ]:
             return functools.partial(self.__wrap, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)
@@ -140,24 +146,22 @@ class RedisShardAPI(object):
         else:
             raise NotImplementedError("method '%s' cannot be sharded" % method)
 
-
     #########################################
     ###  some methods implement as needed ###
     ########################################
-
-    def brpop(self,key, timeout=0):
+    def brpop(self, key, timeout=0):
         if not isinstance(key, basestring):
             raise NotImplementedError("The key must be single string;mutiple keys cannot be sharded")
         server = self.get_server(key)
-        return server.brpop(key,timeout)
+        return server.brpop(key, timeout)
 
-    def blpop(self,key, timeout=0):
+    def blpop(self, key, timeout=0):
         if not isinstance(key, basestring):
             raise NotImplementedError("The key must be single string;mutiple keys cannot be sharded")
         server = self.get_server(key)
-        return server.blpop(key,timeout)
+        return server.blpop(key, timeout)
 
-    def keys(self,key):
+    def keys(self, key):
         _keys = []
         for node in self.nodes:
             server = self.connections[node]
@@ -188,7 +192,7 @@ class RedisShardAPI(object):
             server = self.connections[node]
             value = server.hmget(key, field_list)
             for i in range(len(field_list)):
-                result[field_list[i]]=value[i]
+                result[field_list[i]] = value[i]
         return result
 
     def lock(self, name, timeout=None, sleep=0.1):
@@ -204,3 +208,6 @@ class RedisShardAPI(object):
         holding the lock.
         """
         return Lock(self, name, timeout=timeout, sleep=sleep)
+
+    def pipeline(self):
+        return Pipeline(self)
