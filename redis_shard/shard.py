@@ -12,6 +12,25 @@ _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
 class RedisShardAPI(object):
 
+    SHARD_METHODS = set(
+        "get", "set", "getset",
+        "setnx", "setex",
+        "incr", "decr", "exists",
+        "delete", "get_type", "type", "rename",
+        "expire", "ttl", "push", "persist",
+        "llen", "lrange", "ltrim", "lpush", "lpop",
+        "lindex", "pop", "lset",
+        "lrem", "sadd", "srem", "scard",
+        "sismember", "smembers",
+        "zadd", "zrem", "zincrby", "zincr", "zrank",
+        "zrange", "zrevrange", "zrangebyscore", "zremrangebyrank", "zrevrangebyscore",
+        "zremrangebyscore", "zcard", "zscore", "zcount",
+        "hget", "hset", "hdel", "hincrby", "hlen",
+        "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
+        "getbit", "setbit", "bitcount", "bitop",
+        "publish", "rpush", "rpop"
+    )
+
     def __init__(self, servers):
         VERSION = tuple(map(int, redis.__version__.split('.')))
         self.nodes = []
@@ -119,23 +138,7 @@ class RedisShardAPI(object):
         return f(*args, **kwargs)
 
     def __getattr__(self, method):
-        if method in [
-            "get", "set", "getset",
-            "setnx", "setex",
-            "incr", "decr", "exists",
-            "delete", "get_type", "type", "rename",
-            "expire", "ttl", "push", "persist",
-            "llen", "lrange", "ltrim", "lpush", "lpop",
-            "lindex", "pop", "lset",
-            "lrem", "sadd", "srem", "scard",
-            "sismember", "smembers",
-            "zadd", "zrem", "zincrby", "zincr", "zrank",
-            "zrange", "zrevrange", "zrangebyscore", "zremrangebyrank", "zrevrangebyscore",
-            "zremrangebyscore", "zcard", "zscore", "zcount",
-            "hget", "hset", "hdel", "hincrby", "hlen",
-            "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
-            "publish", "rpush", "rpop"
-        ]:
+      if method in self.SHARD_METHODS:
             return functools.partial(self.__wrap, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)
