@@ -138,7 +138,7 @@ class RedisShardAPI(object):
         return f(*args, **kwargs)
 
     def __getattr__(self, method):
-      if method in self.SHARD_METHODS:
+        if method in self.SHARD_METHODS:
             return functools.partial(self.__wrap, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)
