@@ -12,7 +12,7 @@ _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
 class RedisShardAPI(object):
 
-    SHARD_METHODS = set(
+    SHARD_METHODS = set([
         "get", "set", "getset",
         "setnx", "setex",
         "incr", "decr", "exists",
@@ -29,7 +29,7 @@ class RedisShardAPI(object):
         "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
         "getbit", "setbit", "bitcount", "bitop",
         "publish", "rpush", "rpop"
-    )
+    ])
 
     def __init__(self, servers):
         VERSION = tuple(map(int, redis.__version__.split('.')))
