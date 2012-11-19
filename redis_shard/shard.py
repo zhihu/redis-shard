@@ -7,43 +7,31 @@ from hashring import HashRing
 import functools
 from pipeline import Pipeline
 
+from .helpers import format_config
+
 _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
 
 class RedisShardAPI(object):
 
-    def __init__(self, servers):
-        VERSION = tuple(map(int, redis.__version__.split('.')))
+    def __init__(self, settings=None):
         self.nodes = []
         self.connections = {}
-        if VERSION < (2, 4, 0):
-            self.pool = redis.ConnectionPool()
-        else:
-            self.pool = None
-        if isinstance(servers, list):
-            for server in servers:
-                conn = redis.Redis(
-                    host=server['host'], port=server[
-                        'port'], db=server['db'], connection_pool=self.pool,
-                    password=server.get('password'), socket_timeout=server.get('socket_timeout'))
-                name = server['name']
-                if name in self.connections:
-                    raise ValueError("server's name config must be unique")
-                self.connections[name] = conn
-                self.nodes.append(name)
-        elif isinstance(servers, dict):
-            for server_name, server in servers.items():
-                conn = redis.Redis(
-                    host=server['host'], port=server[
-                        'port'], db=server['db'], connection_pool=self.pool,
-                    password=server.get('password'), socket_timeout=server.get('socket_timeout'))
-                name = server_name
-                if name in self.connections:
-                    raise ValueError("server's name config must be unique")
-                self.connections[name] = conn
-                self.nodes.append(name)
-        else:
-            raise ValueError("server's config must be list or dict")
+        settings = format_config(settings)
+        for server in settings:
+            name = server.get('name')
+            conn = redis.Redis(host=server.get('host'),
+                               port=server.get('port'),
+                               db=server.get('db'),
+                               password=server.get('password'),
+                               socket_timeout=server.get('socket_timeout'),
+                               unix_socket_path=server.get('unix_socket_path'),
+                               )
+            server['name'] = name
+            if name in self.connections:
+                raise ValueError("server's name config must be unique")
+            self.connections[name] = conn
+            self.nodes.append(name)
         self.ring = HashRing(self.nodes)
 
     def get_server_name(self, key):

@@ -47,3 +47,32 @@ one machine.
 
 >>> client.tag_keys('*{foo}*') == client.keys('*{foo}*')
 
+Config Format
+-------------------
+
+There's three config formats
+
+- list
+
+ servers = [
+       {'name':'node1','host':'127.0.0.1','port':10000,'db':0},
+       {'name':'node2','host':'127.0.0.1','port':11000,'db':0},
+       {'name':'node3','host':'127.0.0.1','port':12000,'db':0},
+       ]
+
+- dict
+
+ servers = 
+       { 'node1': {'host':'127.0.0.1','port':10000,'db':0},
+         'node2': {'host':'127.0.0.1','port':11000,'db':0},
+         'node3': {'host':'127.0.0.1','port':12000,'db':0},
+       }
+
+- url_schema
+
+  servers = ['redis://127.0.0.1:10000/0?name=node1',
+             'redis://127.0.0.1:11000/0?name=node2',
+             'redis://127.0.0.1:12000/0?name=node3'
+      ]
+
+
