@@ -1,3 +1,6 @@
+0.1.7 (2012-11-19)
+-------------------
+
 0.1.5 (2012-07-16)
 -------------------
 Add many new methods, support socket_timeout and password
