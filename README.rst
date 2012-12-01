@@ -52,7 +52,7 @@ Config Format
 
 There's three config formats
 
-- list
+- list::
 
  servers = [
        {'name':'node1','host':'127.0.0.1','port':10000,'db':0},
@@ -60,7 +60,7 @@ There's three config formats
        {'name':'node3','host':'127.0.0.1','port':12000,'db':0},
        ]
 
-- dict
+- dict::
 
  servers = 
        { 'node1': {'host':'127.0.0.1','port':10000,'db':0},
@@ -68,7 +68,7 @@ There's three config formats
          'node3': {'host':'127.0.0.1','port':12000,'db':0},
        }
 
-- url_schema
+- url_schema::
 
   servers = ['redis://127.0.0.1:10000/0?name=node1',
              'redis://127.0.0.1:11000/0?name=node2',
