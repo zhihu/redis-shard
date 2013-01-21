@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 import os
+import redis_shard
 
 
 def read_file(*path):
@@ -21,7 +22,7 @@ setup(
         "Change History\n" +
         "==============\n\n" +
         read_file("CHANGES.rst")),
-    version="0.1.7",
+    version=redis_shard.__version__,
     packages=["redis_shard"],
     include_package_data=True,
     zip_safe=False,

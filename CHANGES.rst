@@ -1,5 +1,10 @@
+0.1.8 (2013-01-21)
+-------------------
+add `append` and `getrange` method, thks @simon-liu
+
 0.1.7 (2012-11-19)
 -------------------
+use new redis url config instead of dict 
 
 0.1.5 (2012-07-16)
 -------------------
