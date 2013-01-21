@@ -15,7 +15,7 @@ _findhash = re.compile('.*\{(.*)\}.*', re.I)
 class RedisShardAPI(object):
 
     SHARD_METHODS = set([
-        "get", "set", "getset",
+        "get", "set", "getset", "append", "getrange",
         "setnx", "setex",
         "incr", "decr", "exists",
         "delete", "get_type", "type", "rename",
