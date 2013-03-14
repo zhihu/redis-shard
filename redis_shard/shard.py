@@ -41,6 +41,7 @@ class RedisShardAPI(object):
             conn = redis.Redis(**server_config)
             if name in self.connections:
                 raise ValueError("server's name config must be unique")
+            server_config['name'] = name
             self.connections[name] = conn
             self.nodes.append(name)
         self.ring = HashRing(self.nodes)
