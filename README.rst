@@ -5,6 +5,9 @@ according to this article http://antirez.com/post/redis-presharding.html .
 
 The source code is locate at `github <https://github.com/youngking/redis-shard>`_ .
 
+.. image:: https://travis-ci.org/youngking/redis-shard.png?branch=master
+   :alt: Build Status
+
 Usage
 ==============
 Creating a hash ring with multiple servers,By default the hash ring uses a crc32
