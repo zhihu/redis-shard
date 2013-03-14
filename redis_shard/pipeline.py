@@ -1,5 +1,6 @@
 
 import functools
+from .commands import SHARD_METHODS
 
 
 class Pipeline(object):
@@ -43,7 +44,7 @@ class Pipeline(object):
         return results
 
     def __getattr__(self, method):
-        if method in self.shard_api.SHARD_METHODS:
+        if method in SHARD_METHODS:
             return functools.partial(self.__wrap, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)

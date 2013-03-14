@@ -2,6 +2,7 @@
 -------------------
 - add an reshard example
 - tidy the pipeline code
+- add more shard methods
 
 0.1.8 (2013-01-21)
 -------------------

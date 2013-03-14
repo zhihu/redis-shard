@@ -8,29 +8,12 @@ import functools
 from pipeline import Pipeline
 
 from .helpers import format_config
+from .commands import SHARD_METHODS
 
 _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
 
 class RedisShardAPI(object):
-
-    SHARD_METHODS = set([
-        "get", "set", "getset", "append", "getrange",
-        "setnx", "setex",
-        "incr", "decr", "exists",
-        "delete", "get_type", "type", "rename",
-        "expire", "ttl", "push", "persist",
-        "llen", "lrange", "ltrim", "lpush", "lpop",
-        "lindex", "pop", "lset",
-        "lrem", "sadd", "srem", "scard",
-        "sismember", "smembers",
-        "zadd", "zrem", "zincrby", "zincr", "zrank",
-        "zrange", "zrevrange", "zrangebyscore", "zremrangebyrank", "zrevrangebyscore",
-        "zremrangebyscore", "zcard", "zscore", "zcount",
-        "hget", "hset", "hdel", "hincrby", "hlen",
-        "hkeys", "hvals", "hgetall", "hexists", "hmget", "hmset",
-        "publish", "rpush", "rpop"
-    ])
 
     def __init__(self, settings=None):
         self.nodes = []
@@ -80,7 +63,7 @@ class RedisShardAPI(object):
         return f(*args, **kwargs)
 
     def __getattr__(self, method):
-        if method in self.SHARD_METHODS:
+        if method in SHARD_METHODS:
             return functools.partial(self.__wrap, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)
