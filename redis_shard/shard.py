@@ -36,16 +36,9 @@ class RedisShardAPI(object):
         self.nodes = []
         self.connections = {}
         settings = format_config(settings)
-        for server in settings:
-            name = server.get('name')
-            conn = redis.Redis(host=server.get('host'),
-                               port=server.get('port'),
-                               db=server.get('db'),
-                               password=server.get('password'),
-                               socket_timeout=server.get('socket_timeout'),
-                               unix_socket_path=server.get('unix_socket_path'),
-                               )
-            server['name'] = name
+        for server_config in settings:
+            name = server_config.pop('name')
+            conn = redis.Redis(**server_config)
             if name in self.connections:
                 raise ValueError("server's name config must be unique")
             self.connections[name] = conn

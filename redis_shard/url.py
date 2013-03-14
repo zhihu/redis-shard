@@ -30,6 +30,5 @@ def _parse_url(url):
 
 def parse_url(url):
     scheme, host, port, user, password, db, query = _parse_url(url)
-    return dict(transport=scheme, host=host,
-                port=port, user=user,
-                password=password, db=db, **query)
+    assert scheme == 'redis'
+    return dict(host=host, port=port, password=password, db=db, **query)

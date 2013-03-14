@@ -1,3 +1,8 @@
+0.1.9 (2013-03-04)
+-------------------
+- add an reshard example
+- tidy the pipeline code
+
 0.1.8 (2013-01-21)
 -------------------
 add `append` and `getrange` method, thks @simon-liu
