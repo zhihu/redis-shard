@@ -18,6 +18,9 @@ class TestShard(unittest.TestCase):
         self.client.delete('testset')
         self.client.delete('testzset')
         self.client.delete('testlist')
+        self.client.delete('test1')
+        self.client.delete('test2')
+        self.client.delete('test3')
 
     def test_zset(self):
         self.client.zadd('testzset', 'first', 1)
@@ -32,3 +35,9 @@ class TestShard(unittest.TestCase):
         self.client.rpop('testlist')
         self.client.lpop('testlist')
         self.client.lrange('testlist', 0, -1) == ['1', '2']
+
+    def test_mget(self):
+        self.client.set('test1', 1)
+        self.client.set('test2', 2)
+        self.client.set('test3', 3)
+        assert self.client.mget('test1', 'test2', 'test3') == ['1', '2', '3']
