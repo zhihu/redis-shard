@@ -13,8 +13,22 @@ from .commands import SHARD_METHODS
 _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
 
-class RedisShardAPI(object):
+def list_or_args(keys, args):
+    # returns a single list combining keys and args
+    try:
+        iter(keys)
+        # a string can be iterated, but indicates
+        # keys wasn't passed as a list
+        if isinstance(keys, basestring):
+            keys = [keys]
+    except TypeError:
+        keys = [keys]
+    if args:
+        keys.extend(args)
+    return keys
 
+class RedisShardAPI(object):
+    
     _servers = {}
 
     def __init__(self, settings=None):
@@ -96,6 +110,25 @@ class RedisShardAPI(object):
             server = self.connections[node]
             _keys.extend(server.keys(key))
         return _keys
+
+    def mget(self, keys, *args):
+        """
+        Returns a list of values ordered identically to ``keys``
+        """
+        args = list_or_args(keys, args)
+        server_keys = {}
+        ret_dict = {}
+        for key in args:
+            server_name = self.get_server_name(key)
+            server_keys[server_name] = server_keys.get(server_name, [])
+            server_keys[server_name].append(key)
+        for server_name, sub_keys in server_keys.iteritems():
+            values = self.connections[server_name].mget(sub_keys)
+            ret_dict.update(dict(zip(sub_keys, values)))
+        result = []
+        for key in args:
+            result.append(ret_dict.get(key, None))
+        return result
 
     def flushdb(self):
         for node in self.nodes:
