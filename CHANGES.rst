@@ -1,3 +1,7 @@
+0.1.10 (2013-04-13)
+--------------------
+- add mget support ,thks to @Yuekui
+
 0.1.9 (2013-03-04)
 -------------------
 - add an reshard example
