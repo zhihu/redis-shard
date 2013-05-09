@@ -30,18 +30,13 @@ def list_or_args(keys, args):
 
 class RedisShardAPI(object):
 
-    _servers = {}
-
     def __init__(self, settings=None):
         self.nodes = []
         self.connections = {}
         settings = format_config(settings)
         for server_config in settings:
             name = server_config.pop('name')
-            conn = RedisShardAPI._servers.get(name, None)
-            if not conn:
-                conn = redis.Redis(**server_config)
-                RedisShardAPI._servers[name] = conn
+            conn = redis.Redis(**server_config)
             if name in self.connections:
                 raise ValueError("server's name config must be unique")
             server_config['name'] = name
