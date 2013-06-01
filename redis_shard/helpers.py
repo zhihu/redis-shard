@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import sys
 from .url import parse_url
 
 
@@ -36,7 +37,8 @@ def format_config(settings):
         _type = type(settings[0])
         if _type == dict:
             return settings
-        elif _type in [str, unicode]:
+        if (sys.version_info.major == 3 and _type in [str, bytes]) \
+                or (sys.version_info.major == 2 and _type in [str, unicode]):
             for config in settings:
                 configs.append(parse_url(config))
         else:

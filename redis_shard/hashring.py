@@ -10,6 +10,8 @@
 import zlib
 import bisect
 
+from ._compat import xrange, b
+
 
 class HashRing(object):
     """Consistent hash for nosql API"""
@@ -33,7 +35,7 @@ class HashRing(object):
         """
         self.nodes.append(node)
         for x in xrange(self.replicas):
-            crckey = zlib.crc32("%s:%d" % (node, x))
+            crckey = zlib.crc32(b("%s:%d" % (node, x)))
             self.ring[crckey] = node
             self.sorted_keys.append(crckey)
 
@@ -44,7 +46,7 @@ class HashRing(object):
         """
         self.nodes.remove(node)
         for x in xrange(self.replicas):
-            crckey = zlib.crc32("%s:%d" % (node, x))
+            crckey = zlib.crc32(b("%s:%d" % (node, x)))
             self.ring.remove(crckey)
             self.sorted_keys.remove(crckey)
 
@@ -64,7 +66,7 @@ class HashRing(object):
         """
         if len(self.ring) == 0:
             return [None, None]
-        crc = zlib.crc32(key)
+        crc = zlib.crc32(b(key))
         idx = bisect.bisect(self.sorted_keys, crc)
         idx = min(idx, (self.replicas * len(self.nodes)) - 1)
                   # prevents out of range index

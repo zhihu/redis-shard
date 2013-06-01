@@ -1,6 +1,7 @@
 
 import functools
 from .commands import SHARD_METHODS
+from ._compat import basestring, iteritems
 
 
 class Pipeline(object):
@@ -38,7 +39,7 @@ class Pipeline(object):
 
     def execute(self):
         results = []
-        for name, pipeline in self.pipelines.iteritems():
+        for name, pipeline in iteritems(self.pipelines):
             result = pipeline.execute()
             results.extend(list(result))
         return results

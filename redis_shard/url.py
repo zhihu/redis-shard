@@ -1,8 +1,12 @@
-from urllib import unquote
-from urlparse import urlparse
 try:
+    # python2
+    from urllib import unquote
+    from urlparse import urlparse
     from urlparse import parse_qsl
-except ImportError:  # pragma: no cover
+except ImportError:
+    # python3
+    from urllib.parse import unquote
+    from urllib.parse import urlparse
     from cgi import parse_qsl  # noqa
 
 

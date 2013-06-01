@@ -8,7 +8,7 @@ import redis_shard
 def read_file(*path):
     base_dir = os.path.dirname(__file__)
     file_path = (base_dir, ) + tuple(path)
-    return file(os.path.join(*file_path)).read()
+    return open(os.path.join(*file_path)).read()
 
 setup(
     name="redis-shard",

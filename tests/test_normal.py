@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 from redis_shard.shard import RedisShardAPI
+from redis_shard._compat import b
 from nose.tools import eq_
 from .config import servers
 
@@ -41,9 +42,9 @@ class TestShard(unittest.TestCase):
         self.client.set('test1', 1)
         self.client.set('test2', 2)
         self.client.set('test3', 3)
-        assert self.client.mget('test1', 'test2', 'test3') == ['1', '2', '3']
+        eq_(self.client.mget('test1', 'test2', 'test3'), [b('1'), b('2'), b('3')])
 
     def test_mset(self):
         self.client.mset({'test4': 4, 'test5': 5, 'test6': 6})
-        eq_(self.client.get('test4'), '4')
-        eq_(self.client.mget('test4', 'test5', 'test6'), ['4', '5', '6'])
+        eq_(self.client.get('test4'), b('4'))
+        eq_(self.client.mget('test4', 'test5', 'test6'), [b('4'), b('5'), b('6')])

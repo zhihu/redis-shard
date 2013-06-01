@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import re
+import functools
 import redis
 from redis.client import Lock
-from hashring import HashRing
-import functools
-from pipeline import Pipeline
 
+from .hashring import HashRing
+from .pipeline import Pipeline
 from .helpers import format_config
 from .commands import SHARD_METHODS
+from ._compat import basestring, iteritems
 
 _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
@@ -118,7 +119,7 @@ class RedisShardAPI(object):
             server_name = self.get_server_name(key)
             server_keys[server_name] = server_keys.get(server_name, [])
             server_keys[server_name].append(key)
-        for server_name, sub_keys in server_keys.iteritems():
+        for server_name, sub_keys in iteritems(server_keys):
             values = self.connections[server_name].mget(sub_keys)
             ret_dict.update(dict(zip(sub_keys, values)))
         result = []
