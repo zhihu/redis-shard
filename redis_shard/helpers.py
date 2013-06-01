@@ -36,7 +36,7 @@ def format_config(settings):
         _type = type(settings[0])
         if _type == dict:
             return settings
-        elif _type == str:
+        elif _type in [str, unicode]:
             for config in settings:
                 configs.append(parse_url(config))
         else:
