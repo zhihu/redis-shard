@@ -160,3 +160,10 @@ class RedisShardAPI(object):
 
     def pipeline(self):
         return Pipeline(self)
+
+    def eval(self, script, numkeys, *keys_and_args):
+        if numkeys != 1:
+            raise NotImplementedError("The key must be single string;mutiple keys cannot be sharded")
+        key = keys_and_args[0]
+        server = self.get_server(key)
+        return server.eval(key, script, numkeys, *keys_and_args)
