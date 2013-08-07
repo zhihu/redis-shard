@@ -55,11 +55,11 @@ class TestShard(unittest.TestCase):
         self.client.eval("""
             return redis.call('set', KEYS[1], ARGV[1])
         """, 1, 'test7', '7')
-        eq_(self.client.get('test7'), '7')
+        eq_(self.client.get('test7'), b('7'))
 
     def test_evalsha(self):
         sha = self.client.script_load("""
             return redis.call('set', KEYS[1], ARGV[1])
         """)
-        eq_(self.client.evalsha(sha, 1, 'test8', '8'), 'OK')
-        eq_(self.client.get('test8'), '8')
+        eq_(self.client.evalsha(sha, 1, 'test8', b('8')), b('OK'))
+        eq_(self.client.get('test8'), b('8'))
