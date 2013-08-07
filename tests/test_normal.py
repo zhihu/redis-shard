@@ -23,6 +23,8 @@ class TestShard(unittest.TestCase):
         self.client.delete('test1')
         self.client.delete('test2')
         self.client.delete('test3')
+        self.client.delete('test7')
+        self.client.delete('test8')
 
     def test_zset(self):
         self.client.zadd('testzset', 'first', 1)
@@ -48,3 +50,16 @@ class TestShard(unittest.TestCase):
         self.client.mset({'test4': 4, 'test5': 5, 'test6': 6})
         eq_(self.client.get('test4'), b('4'))
         eq_(self.client.mget('test4', 'test5', 'test6'), [b('4'), b('5'), b('6')])
+
+    def test_eval(self):
+        self.client.eval("""
+            return redis.call('set', KEYS[1], ARGV[1])
+        """, 1, 'test7', '7')
+        eq_(self.client.get('test7'), '7')
+
+    def test_evalsha(self):
+        sha = self.client.script_load("""
+            return redis.call('set', KEYS[1], ARGV[1])
+        """)
+        eq_(self.client.evalsha(sha, 1, 'test8', '8'), 'OK')
+        eq_(self.client.get('test8'), '8')

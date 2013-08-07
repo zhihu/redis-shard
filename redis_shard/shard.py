@@ -66,6 +66,14 @@ class RedisShardAPI(object):
         f = getattr(server, method)
         return f(*args, **kwargs)
 
+    def __wrap_eval(self, method, script_or_sha, numkeys, *keys_and_args):
+        if numkeys != 1:
+            raise NotImplementedError("The key must be single string;mutiple keys cannot be sharded")
+        key = keys_and_args[0]
+        server = self.get_server(key)
+        f = getattr(server, method)
+        return f(script_or_sha, numkeys, *keys_and_args)
+
     def __wrap_tag(self, method, *args, **kwargs):
         key = args[0]
         if isinstance(key, basestring) and '{' in key:
@@ -81,6 +89,8 @@ class RedisShardAPI(object):
     def __getattr__(self, method):
         if method in SHARD_METHODS:
             return functools.partial(self.__wrap, method)
+        elif method in ('eval', 'evalsha'):
+            return functools.partial(self.__wrap_eval, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)
         else:
@@ -161,3 +171,12 @@ class RedisShardAPI(object):
 
     def pipeline(self):
         return Pipeline(self)
+
+    def script_load(self, script):
+        shas = []
+        for node in self.nodes:
+            server = self.connections[node]
+            shas.append(server.script_load(script))
+        if not all(x == shas[0] for x in shas):
+            raise ValueError('not all server returned same sha')
+        return shas[0]

@@ -25,6 +25,14 @@ class Pipeline(object):
         f = getattr(pipeline, method)
         return f(*args, **kwargs)
 
+    def __wrap_eval(self, method, script_or_sha, numkeys, *keys_and_args):
+        if numkeys != 1:
+            raise NotImplementedError("The key must be single string;mutiple keys cannot be sharded")
+        key = keys_and_args[0]
+        pipeline = self.get_pipeline(key)
+        f = getattr(pipeline, method)
+        return f(script_or_sha, numkeys, *keys_and_args)
+
     def __wrap_tag(self, method, *args, **kwargs):
         key = args[0]
         if isinstance(key, basestring) and '{' in key:
@@ -47,6 +55,8 @@ class Pipeline(object):
     def __getattr__(self, method):
         if method in SHARD_METHODS:
             return functools.partial(self.__wrap, method)
+        elif method in ('eval', 'evalsha'):
+            return functools.partial(self.__wrap_eval, method)
         elif method.startswith("tag_"):
             return functools.partial(self.__wrap_tag, method)
         else:

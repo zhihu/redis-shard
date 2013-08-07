@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import unittest
+from nose.tools import eq_
 from redis_shard.shard import RedisShardAPI
 from .config import servers
 
@@ -29,3 +30,13 @@ class TestShard(unittest.TestCase):
         pipe.execute()
         self.client.get('test') == '2'
         self.client.zscore('testzset', 'fist') == '3.0'
+
+    def test_pipeline_script(self):
+        pipe = self.client.pipeline()
+        for i in xrange(100):
+            pipe.eval("""
+                redis.call('set', KEYS[1], ARGV[1])
+            """, 1, 'testx%d' % i, i)
+        pipe.execute()
+        for i in xrange(100):
+            eq_(self.client.get('testx%d' % i), '%d' % i)
