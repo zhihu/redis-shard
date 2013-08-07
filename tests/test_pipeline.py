@@ -3,6 +3,7 @@
 import unittest
 from nose.tools import eq_
 from redis_shard.shard import RedisShardAPI
+from redis_shard._compat import b
 from .config import servers
 
 
@@ -33,10 +34,10 @@ class TestShard(unittest.TestCase):
 
     def test_pipeline_script(self):
         pipe = self.client.pipeline()
-        for i in xrange(100):
+        for i in range(100):
             pipe.eval("""
                 redis.call('set', KEYS[1], ARGV[1])
             """, 1, 'testx%d' % i, i)
         pipe.execute()
-        for i in xrange(100):
-            eq_(self.client.get('testx%d' % i), '%d' % i)
+        for i in range(100):
+            eq_(self.client.get('testx%d' % i), b('%d' % i))
