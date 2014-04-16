@@ -67,7 +67,7 @@ class Pipeline(object):
         results = []
 
         # Pipeline concurrently
-        values = self.pool.map(lambda name, pipe: self.__unit_execute(pipe), iteritems(self.pipelines))
+        values = self.pool.map(lambda (name, pipe): self.__unit_execute(pipe), iteritems(self.pipelines))
         for v in values:
             results.extend(v)
 
