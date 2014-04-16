@@ -2,7 +2,7 @@
 import functools
 from multiprocessing.dummy import Pool as ThreadPool
 from .commands import SHARD_METHODS
-from ._compat import basestring, iteritems
+from ._compat import basestring, dictvalues, iteritems
 
 
 class Pipeline(object):
@@ -67,7 +67,7 @@ class Pipeline(object):
         results = []
 
         # Pipeline concurrently
-        values = self.pool.map(lambda (name, pipe): self.__unit_execute(pipe), iteritems(self.pipelines))
+        values = self.pool.map(self.__unit_execute, dictvalues(self.pipelines))
         for v in values:
             results.extend(v)
 
