@@ -1,13 +1,16 @@
 
 import functools
+from multiprocessing.dummy import Pool as ThreadPool
 from .commands import SHARD_METHODS
 from ._compat import basestring, iteritems
 
 
 class Pipeline(object):
+
     def __init__(self, shard_api):
         self.shard_api = shard_api
         self.pipelines = {}
+        self.pool = ThreadPool(len(self.shard_api.nodes))
         self.__counter = 0
         self.__indexes = {}
 
@@ -62,10 +65,11 @@ class Pipeline(object):
 
     def execute(self):
         results = []
-        for name, pipeline in iteritems(self.pipelines):
-            result = pipeline.execute()
-            result = zip(self.__indexes[pipeline], result)
-            results.extend(result)
+
+        # Pipeline concurrently
+        values = self.pool.map(lambda name, pipe: self.__unit_execute(pipe), iteritems(self.pipelines))
+        for v in values:
+            results.extend(v)
 
         self.__counter = 0
         self.__indexes = {}
@@ -73,6 +77,10 @@ class Pipeline(object):
         results.sort(key=lambda x: x[0])
         results = [r[1] for r in results]
         return results
+
+    def __unit_execute(self, pipeline):
+        result = pipeline.execute()
+        return zip(self.__indexes[pipeline], result)
 
     def __getattr__(self, method):
         if method in SHARD_METHODS:
