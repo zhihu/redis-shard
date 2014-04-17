@@ -1,19 +1,31 @@
 
 import functools
+from multiprocessing.dummy import Pool as ThreadPool
 from .commands import SHARD_METHODS
-from ._compat import basestring, iteritems
+from ._compat import basestring, dictvalues, iteritems
 
 
 class Pipeline(object):
+
     def __init__(self, shard_api):
         self.shard_api = shard_api
         self.pipelines = {}
+        self.pool = ThreadPool(len(self.shard_api.nodes))
+        self.__counter = 0
+        self.__indexes = {}
 
     def get_pipeline(self, key):
         name = self.shard_api.get_server_name(key)
         if name not in self.pipelines:
             self.pipelines[name] = self.shard_api.connections[name].pipeline()
         return self.pipelines[name]
+
+    def __record_index(self, pipeline):
+        if pipeline not in self.__indexes:
+            self.__indexes[pipeline] = [self.__counter]
+        else:
+            self.__indexes[pipeline].append(self.__counter)
+        self.__counter += 1
 
     def __wrap(self, method, *args, **kwargs):
         try:
@@ -23,7 +35,9 @@ class Pipeline(object):
             raise ValueError("method '%s' requires a key param as the first argument" % method)
         pipeline = self.get_pipeline(key)
         f = getattr(pipeline, method)
-        return f(*args, **kwargs)
+        r = f(*args, **kwargs)
+        self.__record_index(pipeline)
+        return r
 
     def __wrap_eval(self, method, script_or_sha, numkeys, *keys_and_args):
         if numkeys != 1:
@@ -31,7 +45,9 @@ class Pipeline(object):
         key = keys_and_args[0]
         pipeline = self.get_pipeline(key)
         f = getattr(pipeline, method)
-        return f(script_or_sha, numkeys, *keys_and_args)
+        r = f(script_or_sha, numkeys, *keys_and_args)
+        self.__record_index(pipeline)
+        return r
 
     def __wrap_tag(self, method, *args, **kwargs):
         key = args[0]
@@ -43,14 +59,28 @@ class Pipeline(object):
             raise ValueError("method '%s' requires tag key params as its arguments" % method)
         method = method.lstrip("tag_")
         f = getattr(pipeline, method)
-        return f(*args, **kwargs)
+        r = f(*args, **kwargs)
+        self.__record_index(pipeline)
+        return r
 
     def execute(self):
         results = []
-        for name, pipeline in iteritems(self.pipelines):
-            result = pipeline.execute()
-            results.extend(list(result))
+
+        # Pipeline concurrently
+        values = self.pool.map(self.__unit_execute, dictvalues(self.pipelines))
+        for v in values:
+            results.extend(v)
+
+        self.__counter = 0
+        self.__indexes = {}
+
+        results.sort(key=lambda x: x[0])
+        results = [r[1] for r in results]
         return results
+
+    def __unit_execute(self, pipeline):
+        result = pipeline.execute()
+        return zip(self.__indexes[pipeline], result)
 
     def __getattr__(self, method):
         if method in SHARD_METHODS:
