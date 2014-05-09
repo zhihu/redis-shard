@@ -3,6 +3,8 @@
 import re
 import functools
 import redis
+from multiprocessing.dummy import Pool as ThreadPool
+
 from redis.client import Lock
 
 from .hashring import HashRing
@@ -44,6 +46,7 @@ class RedisShardAPI(object):
             self.connections[name] = conn
             self.nodes.append(name)
         self.ring = HashRing(self.nodes)
+        self.pool = ThreadPool(len(self.nodes))
 
     def get_server_name(self, key):
         g = _findhash.match(key)
