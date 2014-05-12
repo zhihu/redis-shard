@@ -11,6 +11,7 @@ class Pipeline(object):
         self.pipelines = {}
         self.__counter = 0
         self.__indexes = {}
+        self.shard_api._build_pool()
 
     def get_pipeline(self, key):
         name = self.shard_api.get_server_name(key)

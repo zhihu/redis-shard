@@ -36,6 +36,7 @@ class RedisShardAPI(object):
     def __init__(self, settings=None):
         self.nodes = []
         self.connections = {}
+        self.pool = None
         settings = format_config(settings)
         for server_config in settings:
             name = server_config.pop('name')
@@ -46,7 +47,6 @@ class RedisShardAPI(object):
             self.connections[name] = conn
             self.nodes.append(name)
         self.ring = HashRing(self.nodes)
-        self.pool = ThreadPool(len(self.nodes))
 
     def get_server_name(self, key):
         g = _findhash.match(key)
@@ -58,6 +58,10 @@ class RedisShardAPI(object):
     def get_server(self, key):
         name = self.get_server_name(key)
         return self.connections[name]
+
+    def _build_pool(self):
+        if self.pool is None:
+            self.pool = ThreadPool(len(self.nodes))
 
     def __wrap(self, method, *args, **kwargs):
         try:
