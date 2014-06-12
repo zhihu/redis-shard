@@ -3,7 +3,12 @@
 import re
 import functools
 import redis
-from multiprocessing.dummy import Pool as ThreadPool
+try:
+    from gevent import monkey
+    monkey.patch_all()
+    from gevent.pool import Pool as ThreadPool
+except:
+    from multiprocessing.dummy import Pool as ThreadPool
 
 from redis.client import Lock
 
