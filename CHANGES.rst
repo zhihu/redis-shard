@@ -1,3 +1,7 @@
+0.2.4 (2014-06-26)
+-------------------
+- remove gevent dependency
+
 0.2.3 (2014-06-02)
 -------------------
 - better pipeline support
