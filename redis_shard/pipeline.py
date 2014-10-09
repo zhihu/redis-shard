@@ -79,7 +79,7 @@ class Pipeline(object):
 
     def __unit_execute(self, pipeline):
         result = pipeline.execute()
-        return zip(self.__indexes[pipeline], result)
+        return zip(self.__indexes.get(pipeline, []), result)
 
     def __getattr__(self, method):
         if method in SHARD_METHODS:
