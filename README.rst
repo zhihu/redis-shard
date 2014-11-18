@@ -3,7 +3,8 @@ Redis Shard
 
 A Redis sharding implementation.
 
-.. image:: https://travis-ci.org/zhihu/redis-shard.png?branch=master
+.. image:: https://travis-ci.org/zhihu/redis-shard.svg?branch=master
+   :target: https://travis-ci.org/zhihu/redis-shard
    :alt: Build Status
 
 Redis is great. It's fast, lightweight and easy to use. But when we want to store
