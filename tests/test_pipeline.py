@@ -4,13 +4,13 @@ import unittest
 from nose.tools import eq_
 from redis_shard.shard import RedisShardAPI
 from redis_shard._compat import b
-from .config import servers
+from .config import settings
 
 
 class TestShard(unittest.TestCase):
 
     def setUp(self):
-        self.client = RedisShardAPI(servers)
+        self.client = RedisShardAPI(settings)
         self.clear_db()
 
     def tearDown(self):

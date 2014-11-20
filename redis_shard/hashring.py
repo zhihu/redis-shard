@@ -9,19 +9,31 @@
 
 import zlib
 import bisect
+from hashlib import md5, sha1
 
 from ._compat import xrange, b
 
 
+hash_methods = {
+    'crc32': zlib.crc32,
+    'md5': lambda x: long(md5(x).hexdigest(), 16),
+    'sha1': lambda x: long(sha1(x).hexdigest(), 16),
+}
+
+
 class HashRing(object):
+
     """Consistent hash for nosql API"""
-    def __init__(self, nodes=[], replicas=128):
+
+    def __init__(self, nodes=[], replicas=128, hash_method='crc32'):
         """Manages a hash ring.
 
         `nodes` is a list of objects that have a proper __str__ representation.
         `replicas` indicates how many virtual points should be used pr. node,
         replicas are required to improve the distribution.
+        `hash_method` is the key generator method.
         """
+        self.hash_method = hash_methods[hash_method]
         self.nodes = []
         self.replicas = replicas
         self.ring = {}
@@ -35,9 +47,9 @@ class HashRing(object):
         """
         self.nodes.append(node)
         for x in xrange(self.replicas):
-            crckey = zlib.crc32(b("%s:%d" % (node, x)))
-            self.ring[crckey] = node
-            self.sorted_keys.append(crckey)
+            ringkey = self.hash_method(b("%s:%d" % (node, x)))
+            self.ring[ringkey] = node
+            self.sorted_keys.append(ringkey)
 
         self.sorted_keys.sort()
 
@@ -46,9 +58,9 @@ class HashRing(object):
         """
         self.nodes.remove(node)
         for x in xrange(self.replicas):
-            crckey = zlib.crc32(b("%s:%d" % (node, x)))
-            self.ring.remove(crckey)
-            self.sorted_keys.remove(crckey)
+            ringkey = self.hash_method(b("%s:%d" % (node, x)))
+            self.ring.remove(ringkey)
+            self.sorted_keys.remove(ringkey)
 
     def get_node(self, key):
         """Given a string key a corresponding node in the hash ring is returned.
@@ -66,7 +78,7 @@ class HashRing(object):
         """
         if len(self.ring) == 0:
             return [None, None]
-        crc = zlib.crc32(b(key))
+        crc = self.hash_method(b(key))
         idx = bisect.bisect(self.sorted_keys, crc)
         idx = min(idx, (self.replicas * len(self.nodes)) - 1)
                   # prevents out of range index

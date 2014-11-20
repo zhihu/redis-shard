@@ -6,12 +6,14 @@ import redis
 from multiprocessing.dummy import Pool as ThreadPool
 
 from redis.client import Lock
+from redis.sentinel import Sentinel
 
-from .hashring import HashRing
-from .pipeline import Pipeline
-from .helpers import format_config
 from .commands import SHARD_METHODS
 from ._compat import basestring, iteritems
+from .hashring import HashRing
+from .helpers import format_servers
+from .pipeline import Pipeline
+from .sentinel import SentinelRedis
 
 _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
@@ -37,16 +39,20 @@ class RedisShardAPI(object):
         self.nodes = []
         self.connections = {}
         self.pool = None
-        settings = format_config(settings)
-        for server_config in settings:
+        servers = format_servers(settings['servers'])
+        if 'sentinel' in settings:
+            sentinel = Sentinel(settings['sentinel']['hosts'], socket_timeout=settings['sentinel'].get('socket_timeout', 1))
+        for server_config in servers:
             name = server_config.pop('name')
-            conn = redis.Redis(**server_config)
             if name in self.connections:
                 raise ValueError("server's name config must be unique")
+            if 'sentinel' in settings:
+                self.connections[name] = SentinelRedis(sentinel, name)
+            else:
+                self.connections[name] = redis.Redis(**server_config)
             server_config['name'] = name
-            self.connections[name] = conn
             self.nodes.append(name)
-        self.ring = HashRing(self.nodes)
+        self.ring = HashRing(self.nodes, hash_method=settings.get('hash_method', 'crc32'))
 
     def get_server_name(self, key):
         g = _findhash.match(key)

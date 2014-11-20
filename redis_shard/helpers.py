@@ -4,9 +4,9 @@ import sys
 from .url import parse_url
 
 
-def format_config(settings):
+def format_servers(servers):
     """
-    There's three config formats
+    There's two config formats
 
     - list
 
@@ -16,13 +16,6 @@ def format_config(settings):
         {'name':'node3','host':'127.0.0.1','port':12000,'db':0},
         ]
 
-    - dict
-
-    servers =
-        { 'node1': {'host':'127.0.0.1','port':10000,'db':0},
-            'node2': {'host':'127.0.0.1','port':11000,'db':0},
-            'node3': {'host':'127.0.0.1','port':12000,'db':0},
-        }
 
     - url_schema
 
@@ -33,20 +26,15 @@ def format_config(settings):
 
     """
     configs = []
-    if isinstance(settings, list):
-        _type = type(settings[0])
-        if _type == dict:
-            return settings
-        if (sys.version_info[0] == 3 and _type in [str, bytes]) \
-                or (sys.version_info[0] == 2 and _type in [str, unicode]):
-            for config in settings:
-                configs.append(parse_url(config))
-        else:
-            raise ValueError("invalid server config")
-    elif isinstance(settings, dict):
-        for name, config in settings.items():
-            config['name'] = name
-            configs.append(config)
-    else:
+    if not isinstance(servers, list):
         raise ValueError("server's config must be list or dict")
+    _type = type(servers[0])
+    if _type == dict:
+        return servers
+    if (sys.version_info[0] == 3 and _type in [str, bytes]) \
+            or (sys.version_info[0] == 2 and _type in [str, unicode]):
+        for config in servers:
+            configs.append(parse_url(config))
+    else:
+        raise ValueError("invalid server config")
     return configs

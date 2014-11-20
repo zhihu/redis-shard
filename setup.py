@@ -26,7 +26,7 @@ setup(
     packages=["redis_shard"],
     include_package_data=True,
     zip_safe=False,
-    install_requires=['redis', ],
+    install_requires=['redis>=2.10.3', ],
     tests_require=['Nose'],
     classifiers=[
         "Programming Language :: Python",

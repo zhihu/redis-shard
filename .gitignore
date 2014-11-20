@@ -7,3 +7,4 @@ dist
 tags
 local_config.py
 local_settings.py
+.tox
