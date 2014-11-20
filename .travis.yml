@@ -5,6 +5,8 @@ python:
   - "3.4"
 services:
   - redis-server
+before_install:
+  - redis-server tests/sentinel.conf --sentinel
 install:
   - python setup.py install
 script: nosetests
