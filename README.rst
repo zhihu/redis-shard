@@ -1,11 +1,23 @@
 Redis Shard
 ###########
 
-A Redis sharding implementation.
-
-.. image:: https://travis-ci.org/zhihu/redis-shard.svg?branch=master
+.. image:: https://img.shields.io/travis/zhihu/redis-shard.svg?style=flat
    :target: https://travis-ci.org/zhihu/redis-shard
    :alt: Build Status
+
+.. image:: https://pypip.in/version/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: Latest Version
+
+.. image:: https://pypip.in/py_versions/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: Supported Python versions
+
+.. image:: https://pypip.in/license/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: License
+
+A Redis sharding implementation.
 
 Redis is great. It's fast, lightweight and easy to use. But when we want to store
 a mass of data into one single instance, we may encounter some problems such as performance
