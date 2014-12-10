@@ -14,9 +14,11 @@ def read_file(*path):
 setup(
     name="redis-shard",
     url="https://pypi.python.org/pypi/redis-shard",
-    license="BSD",
+    license="BSD License",
     author="Zhihu Inc.",
-    author_email="y@zhihu.com",
+    author_email="opensource@zhihu.com",
+    maintainer="Young King",
+    maintainer_email="y@zhihu.com",
     description="Redis Sharding API",
     long_description=(
         read_file("README.rst") + "\n\n" +
