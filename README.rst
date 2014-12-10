@@ -1,11 +1,23 @@
 Redis Shard
 ###########
 
-A Redis sharding implementation.
-
-.. image:: https://travis-ci.org/zhihu/redis-shard.svg?branch=master
+.. image:: https://img.shields.io/travis/zhihu/redis-shard.svg?style=flat
    :target: https://travis-ci.org/zhihu/redis-shard
    :alt: Build Status
+
+.. image:: https://pypip.in/version/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: Latest Version
+
+.. image:: https://pypip.in/py_versions/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: Supported Python versions
+
+.. image:: https://pypip.in/license/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: License
+
+A Redis sharding implementation.
 
 Redis is great. It's fast, lightweight and easy to use. But when we want to store
 a mass of data into one single instance, we may encounter some problems such as performance
@@ -17,13 +29,13 @@ Usage
 First, Create an RedisShardAPI instance with multiple nodes, node ``name`` **must be unique**::
 
     from redis_shard.shard import RedisShardAPI
-    
+
     servers = [
-        {'name':'server1', 'host':'127.0.0.1', 'port':10000, 'db':0},
-        {'name':'server2', 'host':'127.0.0.1', 'port':11000, 'db':0},
-        {'name':'server3', 'host':'127.0.0.1', 'port':12000, 'db':0},
+        {'name': 'server1', 'host': '127.0.0.1', 'port': 10000, 'db': 0},
+        {'name': 'server2', 'host': '127.0.0.1', 'port': 11000, 'db': 0},
+        {'name': 'server3', 'host': '127.0.0.1', 'port': 12000, 'db': 0},
     ]
-    
+
     client = RedisShardAPI(servers)
 
 Then, you can access the Redis cluster as you use `redis-py <https://github.com/andymccurdy/redis-py>`_::
@@ -48,7 +60,7 @@ you want to use multi-keys command such as ``sinter``), you should use Hash Tags
     client.set('d{foo}e', 5)
 
     client.get_server_name('foo') == client.get_server_name('a{foo}') == client.get_server_name('{foo}d') \
-            == client.get_server_name('d{foo}e')  # True
+        == client.get_server_name('d{foo}e')  # True
 
 The string in a braces of a key is the Hash Tag of the key. The hash of a Hash Tag will be treated the hash of the key.
 So, keys ``foo``, ``bar{foo}`` and ``b{foo}ar`` will be sotred in the same node.
@@ -62,20 +74,20 @@ Config Format
 - list::
 
     servers = [
-        {'name':'node1','host':'127.0.0.1','port':10000,'db':0},
-        {'name':'node2','host':'127.0.0.1','port':11000,'db':0},
-        {'name':'node3','host':'127.0.0.1','port':12000,'db':0},
+        {'name': 'node1', 'host': '127.0.0.1', 'port': 10000, 'db': 0},
+        {'name': 'node2', 'host': '127.0.0.1', 'port': 11000, 'db': 0},
+        {'name': 'node3', 'host': '127.0.0.1', 'port': 12000, 'db': 0},
     ]
 
 - dict::
 
     servers = {
-        'node1': {'host':'127.0.0.1','port':10000,'db':0},
-        'node2': {'host':'127.0.0.1','port':11000,'db':0},
-        'node3': {'host':'127.0.0.1','port':12000,'db':0},
+        'node1': {'host': '127.0.0.1', 'port': 10000, 'db': 0},
+        'node2': {'host': '127.0.0.1', 'port': 11000, 'db': 0},
+        'node3': {'host': '127.0.0.1', 'port': 12000, 'db': 0},
     }
 
-- url_schema::
+- URL schema::
 
     servers = [
         'redis://127.0.0.1:10000/0?name=node1',
