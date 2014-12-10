@@ -1,7 +1,8 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from setuptools import setup
+
 import os
+from setuptools import setup
+
 import redis_shard
 
 
@@ -12,10 +13,10 @@ def read_file(*path):
 
 setup(
     name="redis-shard",
-    url="http://blog.flyzen.com",
+    url="https://pypi.python.org/pypi/redis-shard",
     license="BSD",
-    author="Young King",
-    author_email="yanckin@gmail.com",
+    author="Zhihu Inc.",
+    author_email="y@zhihu.com",
     description="Redis Sharding API",
     long_description=(
         read_file("README.rst") + "\n\n" +
@@ -26,9 +27,11 @@ setup(
     packages=["redis_shard"],
     include_package_data=True,
     zip_safe=False,
-    install_requires=['redis', ],
+    install_requires=['redis'],
     tests_require=['Nose'],
     classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
