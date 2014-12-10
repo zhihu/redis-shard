@@ -13,7 +13,7 @@ def read_file(*path):
 
 setup(
     name="redis-shard",
-    url="https://pypi.python.org/pypi/redis-shard",
+    url="https://github.com/zhihu/redis-shard",
     license="BSD License",
     author="Zhihu Inc.",
     author_email="opensource@zhihu.com",
