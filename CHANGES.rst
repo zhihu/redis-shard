@@ -1,7 +1,7 @@
 0.2.6 (2014-11-20)
 ------------------
 - shard key generate function now support **md5** and **sha1** .
-- add redis sentinel support
+- add Redis Sentinel support
 
 0.2.4 (2014-06-26)
 -------------------

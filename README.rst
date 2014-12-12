@@ -14,12 +14,12 @@ degradation and slow recovery and we need to scale it.
 Usage
 =====
 
-First, Create an RedisShardAPI instance with multiple nodes, node ``name`` **must be unique**::
+ First, Create an RedisShardAPI instance with multiple nodes, node ``name`` **must be unique**::
 
     from redis_shard.shard import RedisShardAPI
 
     settings = {
-       'servers':[
+       'servers': [
            {'name':'server1', 'host':'127.0.0.1', 'port':10000, 'db':0},
            {'name':'server2', 'host':'127.0.0.1', 'port':11000, 'db':0},
            {'name':'server3', 'host':'127.0.0.1', 'port':12000, 'db':0},
@@ -58,8 +58,8 @@ So, keys ``foo``, ``bar{foo}`` and ``b{foo}ar`` will be sotred in the same node.
 
 
 Config Details
-----------------
-There are three keys ``servers`` , ``hash_method`` and ``sentinel`` in the config.
+--------------
+There are three keys ``servers``, ``hash_method`` and ``sentinel`` in the config.
 
 ``servers`` is a list, element in it can have two kinds of format.
 
@@ -82,13 +82,13 @@ There are three keys ``servers`` , ``hash_method`` and ``sentinel`` in the confi
 If the following config ``sentinel`` is enabled, only **name** is needed for the ``servers`` config.   
 
 ``hash_method`` is a string, which indicate the method which will use to generate the consistent hash ring's hash key.
-The default value is **crc32** . Now it also supports **md5** and **sha1**.
+The default value is **crc32**. It also supports **md5** and **sha1**.
 
 
-``sentinel`` is the config for `redis sentinel <http://redis.io/topics/sentinel>`_ .With the sentinel support, redis-shard
+``sentinel`` is the config for `Redis Sentinel <http://redis.io/topics/sentinel>`_ .With the sentinel support, redis-shard
 will do read/write splitting. Config is like this::
 
-  {"hosts": [('localhost', 26379)], "socket_timeout": 0.1 }
+    {"hosts": [('localhost', 26379)], "socket_timeout": 0.1 }
 
 
 

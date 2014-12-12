@@ -6,9 +6,9 @@ from .url import parse_url
 
 def format_servers(servers):
     """
-    There's two config formats
+    :param servers: server list, element in it can have two kinds of format.
 
-    - list
+    - dict
 
     servers = [
         {'name':'node1','host':'127.0.0.1','port':10000,'db':0},
@@ -27,7 +27,7 @@ def format_servers(servers):
     """
     configs = []
     if not isinstance(servers, list):
-        raise ValueError("server's config must be list or dict")
+        raise ValueError("server's config must be list")
     _type = type(servers[0])
     if _type == dict:
         return servers
