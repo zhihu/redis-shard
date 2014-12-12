@@ -1,11 +1,23 @@
 Redis Shard
 ###########
 
-A Redis sharding implementation.
-
-.. image:: https://travis-ci.org/zhihu/redis-shard.svg?branch=master
+.. image:: https://img.shields.io/travis/zhihu/redis-shard.svg?style=flat
    :target: https://travis-ci.org/zhihu/redis-shard
    :alt: Build Status
+
+.. image:: https://pypip.in/version/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: Latest Version
+
+.. image:: https://pypip.in/py_versions/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: Supported Python versions
+
+.. image:: https://pypip.in/license/redis-shard/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/redis-shard
+    :alt: License
+
+A Redis sharding implementation.
 
 Redis is great. It's fast, lightweight and easy to use. But when we want to store
 a mass of data into one single instance, we may encounter some problems such as performance
@@ -14,16 +26,16 @@ degradation and slow recovery and we need to scale it.
 Usage
 =====
 
- First, Create an RedisShardAPI instance with multiple nodes, node ``name`` **must be unique**::
+First, Create an RedisShardAPI instance with multiple nodes, node ``name`` **must be unique**::
 
     from redis_shard.shard import RedisShardAPI
 
     settings = {
-       'servers': [
-           {'name':'server1', 'host':'127.0.0.1', 'port':10000, 'db':0},
-           {'name':'server2', 'host':'127.0.0.1', 'port':11000, 'db':0},
-           {'name':'server3', 'host':'127.0.0.1', 'port':12000, 'db':0},
-           ],
+        'servers': [
+            {'name': 'server1', 'host': '127.0.0.1', 'port': 10000, 'db': 0},
+            {'name': 'server2', 'host': '127.0.0.1', 'port': 11000, 'db': 0},
+            {'name': 'server3', 'host': '127.0.0.1', 'port': 12000, 'db': 0},
+        ],
         'hash_method': 'md5',
     }
     
@@ -51,7 +63,7 @@ you want to use multi-keys command such as ``sinter``), you should use Hash Tags
     client.set('d{foo}e', 5)
 
     client.get_server_name('foo') == client.get_server_name('a{foo}') == client.get_server_name('{foo}d') \
-            == client.get_server_name('d{foo}e')  # True
+        == client.get_server_name('d{foo}e')  # True
 
 The string in a braces of a key is the Hash Tag of the key. The hash of a Hash Tag will be treated the hash of the key.
 So, keys ``foo``, ``bar{foo}`` and ``b{foo}ar`` will be sotred in the same node.
@@ -66,12 +78,12 @@ There are three keys ``servers``, ``hash_method`` and ``sentinel`` in the config
 - dict::
 
     [
-        {'name':'node1','host':'127.0.0.1','port':10000,'db':0},
-        {'name':'node2','host':'127.0.0.1','port':11000,'db':0},
-        {'name':'node3','host':'127.0.0.1','port':12000,'db':0},
+        {'name': 'server1', 'host': '127.0.0.1', 'port': 10000, 'db': 0},
+        {'name': 'server2', 'host': '127.0.0.1', 'port': 11000, 'db': 0},
+        {'name': 'server3', 'host': '127.0.0.1', 'port': 12000, 'db': 0},
     ]
 
-- url_schema::
+- URL schema::
 
     [
         'redis://127.0.0.1:10000/0?name=node1',
@@ -85,10 +97,10 @@ If the following config ``sentinel`` is enabled, only **name** is needed for the
 The default value is **crc32**. It also supports **md5** and **sha1**.
 
 
-``sentinel`` is the config for `Redis Sentinel <http://redis.io/topics/sentinel>`_ .With the sentinel support, redis-shard
+``sentinel`` is the config for `Redis Sentinel <http://redis.io/topics/sentinel>`_. With the sentinel support, redis-shard
 will do read/write splitting. Config is like this::
 
-    {"hosts": [('localhost', 26379)], "socket_timeout": 0.1 }
+    {"hosts": [('localhost', 26379)], "socket_timeout": 0.1}
 
 
 

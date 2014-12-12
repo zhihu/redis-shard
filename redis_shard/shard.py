@@ -193,3 +193,11 @@ class RedisShardAPI(object):
         if not all(x == shas[0] for x in shas):
             raise ValueError('not all server returned same sha')
         return shas[0]
+
+    def haskey(self, key):
+        server_name = self.get_server_name(key)
+        return key in self.connections[server_name]
+
+    def __delitem__(self, key):
+        server_name = self.get_server_name(key)
+        del self.connections[server_name][key]

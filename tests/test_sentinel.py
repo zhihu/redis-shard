@@ -14,9 +14,6 @@ class TestSentinelShard(unittest.TestCase):
         self.client = RedisShardAPI(sentinel_settings)
         self.clear_db()
 
-    def tearDown(self):
-        pass
-
     def clear_db(self):
         self.client.delete('testset')
         self.client.delete('testzset')
