@@ -73,7 +73,7 @@ Config Details
 --------------
 There are three keys ``servers``, ``hash_method`` and ``sentinel`` in the config.
 
-``servers`` is a list, element in it can have two kinds of format.
+``servers`` is a list.  Each element in it should be a dict or a URL schema.
 
 - dict::
 
@@ -93,7 +93,7 @@ There are three keys ``servers``, ``hash_method`` and ``sentinel`` in the config
 
 If the following config ``sentinel`` is enabled, only **name** is needed for the ``servers`` config.   
 
-``hash_method`` is a string, which indicate the method which will use to generate the consistent hash ring's hash key.
+``hash_method`` is a string which indicate the method of generating the hash key of the consistent hash ring.
 The default value is **crc32**. It also supports **md5** and **sha1**.
 
 

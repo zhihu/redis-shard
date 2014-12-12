@@ -95,7 +95,7 @@ SHARD_METHODS = frozenset(['restore',
                            'publish'])
 
 
-READ_ONLY_COMMANDS = frozenset([
+READ_COMMANDS = frozenset([
     'info', 'smembers', 'hlen', 'hmget', 'srandmember', 'hvals', 'randomkey', 'strlen',
     'dbsize', 'keys', 'ttl', 'lindex', 'type', 'llen', 'dump', 'scard', 'echo', 'lrange',
     'zcount', 'exists', 'sdiff', 'zrange', 'mget', 'zrank', 'get', 'getbit', 'getrange',

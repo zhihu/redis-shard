@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 from redis import Redis
-from .commands import READ_ONLY_COMMANDS
+from .commands import READ_COMMANDS
 
 
 class SentinelRedis(object):
@@ -11,7 +11,7 @@ class SentinelRedis(object):
         self.slave = sentinel.slave_for(service_name, redis_class=Redis)
 
     def __getattr__(self, method):
-        if method in READ_ONLY_COMMANDS:
+        if method in READ_COMMANDS:
             return getattr(self.slave, method)
         else:
             return getattr(self.master, method)
