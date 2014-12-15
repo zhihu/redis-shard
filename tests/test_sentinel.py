@@ -1,20 +1,18 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# encoding: utf-8
 import unittest
 from redis_shard.shard import RedisShardAPI
 from redis_shard._compat import b
 from nose.tools import eq_
-from .config import settings
+
+from .config import sentinel_settings
 
 
-class TestShard(unittest.TestCase):
+class TestSentinelShard(unittest.TestCase):
 
     def setUp(self):
-        self.client = RedisShardAPI(settings)
+        self.client = RedisShardAPI(sentinel_settings)
         self.clear_db()
-
-    def tearDown(self):
-        pass
 
     def clear_db(self):
         self.client.delete('testset')
