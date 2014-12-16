@@ -117,3 +117,7 @@ How it Works
 ============
 
 Redis Shard is basically inspired by `this article <http://oldblog.antirez.com/post/redis-presharding.html>`_.
+
+Upgrades
+=========
+For users before 0.3.0, You shuld be notified that the config format has been changed to a dictinary from a list.

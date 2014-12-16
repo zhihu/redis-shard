@@ -1,7 +1,8 @@
-0.2.6 (2014-11-20)
+0.3.0 (2014-11-20)
 ------------------
 - shard key generate function now support **md5** and **sha1** .
 - add Redis Sentinel support
+- config format changed from list to dict
 
 0.2.4 (2014-06-26)
 ------------------
