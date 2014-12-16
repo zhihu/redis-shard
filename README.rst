@@ -34,7 +34,7 @@ First, Create an RedisShardAPI instance with multiple nodes, node ``name`` **mus
             {'name': 'server1', 'host': '127.0.0.1', 'port': 10000, 'db': 0},
             {'name': 'server2', 'host': '127.0.0.1', 'port': 11000, 'db': 0},
             {'name': 'server3', 'host': '127.0.0.1', 'port': 12000, 'db': 0},
-        ]
+    ]
     
     client = RedisShardAPI(servers, hash_method='md5')
 
