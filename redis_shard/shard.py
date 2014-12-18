@@ -35,24 +35,24 @@ def list_or_args(keys, args):
 
 class RedisShardAPI(object):
 
-    def __init__(self, settings=None):
+    def __init__(self, servers, hash_method='crc32', sentinel=None):
         self.nodes = []
         self.connections = {}
         self.pool = None
-        servers = format_servers(settings['servers'])
-        if 'sentinel' in settings:
-            sentinel = Sentinel(settings['sentinel']['hosts'], socket_timeout=settings['sentinel'].get('socket_timeout', 1))
+        servers = format_servers(servers)
+        if sentinel:
+            sentinel = Sentinel(sentinel['hosts'], socket_timeout=sentinel.get('socket_timeout', 1))
         for server_config in servers:
             name = server_config.pop('name')
             if name in self.connections:
                 raise ValueError("server's name config must be unique")
-            if 'sentinel' in settings:
+            if sentinel:
                 self.connections[name] = SentinelRedis(sentinel, name)
             else:
                 self.connections[name] = redis.Redis(**server_config)
             server_config['name'] = name
             self.nodes.append(name)
-        self.ring = HashRing(self.nodes, hash_method=settings.get('hash_method', 'crc32'))
+        self.ring = HashRing(self.nodes, hash_method=hash_method)
 
     def get_server_name(self, key):
         g = _findhash.match(key)

@@ -30,16 +30,13 @@ First, Create an RedisShardAPI instance with multiple nodes, node ``name`` **mus
 
     from redis_shard.shard import RedisShardAPI
 
-    settings = {
-        'servers': [
+    servers = [
             {'name': 'server1', 'host': '127.0.0.1', 'port': 10000, 'db': 0},
             {'name': 'server2', 'host': '127.0.0.1', 'port': 11000, 'db': 0},
             {'name': 'server3', 'host': '127.0.0.1', 'port': 12000, 'db': 0},
-        ],
-        'hash_method': 'md5',
-    }
+    ]
     
-    client = RedisShardAPI(settings)
+    client = RedisShardAPI(servers, hash_method='md5')
 
 Then, you can access the Redis cluster as you use `redis-py <https://github.com/andymccurdy/redis-py>`_::
 
@@ -71,7 +68,7 @@ So, keys ``foo``, ``bar{foo}`` and ``b{foo}ar`` will be sotred in the same node.
 
 Config Details
 --------------
-There are three keys ``servers``, ``hash_method`` and ``sentinel`` in the config.
+There are three parameters ``servers``, ``hash_method`` and ``sentinel`` in the :class:`redis_shard.shard.RedisShardAPI`.
 
 ``servers`` is a list.  Each element in it should be a dict or a URL schema.
 
@@ -91,7 +88,7 @@ There are three keys ``servers``, ``hash_method`` and ``sentinel`` in the config
         'redis://127.0.0.1:12000/0?name=node3'
     ]
 
-If the following config ``sentinel`` is enabled, only **name** is needed for the ``servers`` config.   
+If the following parameter ``sentinel`` is enabled, only **name** is needed for the ``servers`` config.   
 
 ``hash_method`` is a string which indicate the method of generating the hash key of the consistent hash ring.
 The default value is **crc32**. It also supports **md5** and **sha1**.

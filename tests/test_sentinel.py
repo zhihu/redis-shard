@@ -11,7 +11,7 @@ from .config import sentinel_settings
 class TestSentinelShard(unittest.TestCase):
 
     def setUp(self):
-        self.client = RedisShardAPI(sentinel_settings)
+        self.client = RedisShardAPI(**sentinel_settings)
         self.clear_db()
 
     def clear_db(self):

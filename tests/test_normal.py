@@ -10,7 +10,7 @@ from .config import settings
 class TestShard(unittest.TestCase):
 
     def setUp(self):
-        self.client = RedisShardAPI(settings)
+        self.client = RedisShardAPI(**settings)
         self.clear_db()
 
     def tearDown(self):
