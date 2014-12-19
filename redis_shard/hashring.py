@@ -47,9 +47,9 @@ class HashRing(object):
         """
         self.nodes.append(node)
         for x in xrange(self.replicas):
-            ringkey = self.hash_method(b("%s:%d" % (node, x)))
-            self.ring[ringkey] = node
-            self.sorted_keys.append(ringkey)
+            ring_key = self.hash_method(b("%s:%d" % (node, x)))
+            self.ring[ring_key] = node
+            self.sorted_keys.append(ring_key)
 
         self.sorted_keys.sort()
 
@@ -58,9 +58,9 @@ class HashRing(object):
         """
         self.nodes.remove(node)
         for x in xrange(self.replicas):
-            ringkey = self.hash_method(b("%s:%d" % (node, x)))
-            self.ring.remove(ringkey)
-            self.sorted_keys.remove(ringkey)
+            ring_key = self.hash_method(b("%s:%d" % (node, x)))
+            self.ring.pop(ring_key)
+            self.sorted_keys.remove(ring_key)
 
     def get_node(self, key):
         """Given a string key a corresponding node in the hash ring is returned.
