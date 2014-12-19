@@ -18,4 +18,4 @@ class TestHashRing(unittest.TestCase):
         )
         hash_ring_object.remove_node("redis01")
         eq_(hash_ring_object.nodes, ["redis02"])
-        eq_(hash_ring_object.ring.values(), ["redis02"] * replicas)
+        eq_(list(hash_ring_object.ring.values()), ["redis02"] * replicas)
