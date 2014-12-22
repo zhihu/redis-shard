@@ -80,8 +80,8 @@ class HashRing(object):
             return [None, None]
         crc = self.hash_method(b(key))
         idx = bisect.bisect(self.sorted_keys, crc)
+        # prevents out of range index
         idx = min(idx, (self.replicas * len(self.nodes)) - 1)
-                  # prevents out of range index
         return [self.ring[self.sorted_keys[idx]], idx]
 
     def iter_nodes(self, key):
