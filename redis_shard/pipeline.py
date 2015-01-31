@@ -91,3 +91,19 @@ class Pipeline(object):
         else:
             raise NotImplementedError(
                 "method '%s' cannot be pipelined" % method)
+
+    def reset(self):
+        for pipeline in self.pipelines.itervalues():
+            try:
+                pipeline.reset()
+            except Exception:
+                pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.reset()
+
+    def __del__(self):
+        self.reset()
