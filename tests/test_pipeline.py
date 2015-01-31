@@ -30,7 +30,7 @@ class TestShard(unittest.TestCase):
         pipe.zadd('testzset', 'second', 2)
         pipe.execute()
         pipe.reset()
-        eq_(self.client.get('test'), '2')
+        eq_(self.client.get('test'), b'2')
         eq_(self.client.zscore('testzset', 'first'), 2.0)
         eq_(self.client.zscore('testzset', 'second'), 2.0)
 
@@ -40,7 +40,7 @@ class TestShard(unittest.TestCase):
             pipe.zincrby('testzset', 'first')
             pipe.zadd('testzset', 'second', 5)
             pipe.execute()
-        eq_(self.client.get('test'), '3')
+        eq_(self.client.get('test'), b'3')
         eq_(self.client.zscore('testzset', 'first'), 5.0)
         eq_(self.client.zscore('testzset', 'second'), 5.0)
 
