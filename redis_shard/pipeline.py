@@ -1,7 +1,8 @@
 
 import functools
+
 from .commands import SHARD_METHODS
-from ._compat import basestring, dictvalues
+from ._compat import basestring, dictvalues, itervalues
 
 
 class Pipeline(object):
@@ -93,7 +94,7 @@ class Pipeline(object):
                 "method '%s' cannot be pipelined" % method)
 
     def reset(self):
-        for pipeline in self.pipelines.itervalues():
+        for pipeline in itervalues(self.pipelines):
             try:
                 pipeline.reset()
             except Exception:

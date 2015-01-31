@@ -12,6 +12,8 @@ if sys.version_info[0] < 3:
         from StringIO import StringIO as BytesIO
 
     iteritems = lambda x: x.iteritems()
+    iterkeys = lambda x: x.iterkeys()
+    itervalues = lambda x: x.itervalues()
     dictkeys = lambda x: x.keys()
     dictvalues = lambda x: x.values()
     nativestr = lambda x: \
@@ -32,6 +34,8 @@ else:
     from string import ascii_letters
 
     iteritems = lambda x: x.items()
+    iterkeys = lambda x: x.keys()
+    itervalues = lambda x: x.values()
     dictkeys = lambda x: list(x.keys())
     dictvalues = lambda x: list(x.values())
     byte_to_chr = lambda x: chr(x)
