@@ -49,12 +49,15 @@ class TestShard(unittest.TestCase):
 
         with self.client.pipeline() as pipe:
             pipe.watch('test')
+            eq_(self.client.get('test'), b'3')
+            pipe.multi()
             pipe.incr('test')
-            pipe.execute()
+            eq_(pipe.execute(), [4])
         eq_(self.client.get('test'), b'4')
 
         with self.client.pipeline() as pipe:
             pipe.watch('test')
+            pipe.multi()
             pipe.incr('test')
             self.client.decr('test')
             self.assertRaises(WatchError, pipe.execute)
@@ -63,6 +66,7 @@ class TestShard(unittest.TestCase):
         keys_of_names = {}
         with self.client.pipeline() as pipe:
             for key in xrange(100):
+                key = str(key)
                 name = pipe.shard_api.get_server_name(key)
                 if name not in keys_of_names:
                     keys_of_names[name] = key
@@ -71,12 +75,14 @@ class TestShard(unittest.TestCase):
                     key2 = keys_of_names[name]
 
                     pipe.watch(key1, key2)
+                    pipe.multi()
                     pipe.set(key1, 1)
                     pipe.set(key2, 2)
                     pipe.execute()
 
                     eq_(self.client.get(key1), b'1')
                     eq_(self.client.get(key2), b'2')
+                    break
 
     def test_pipeline_script(self):
         pipe = self.client.pipeline()
