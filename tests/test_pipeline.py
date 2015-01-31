@@ -6,7 +6,7 @@ from nose.tools import eq_
 from redis.exceptions import WatchError
 
 from redis_shard.shard import RedisShardAPI
-from redis_shard._compat import b
+from redis_shard._compat import b, xrange
 from .config import settings
 
 
