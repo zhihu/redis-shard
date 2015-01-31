@@ -1,7 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import unittest
+
 from nose.tools import eq_
+from redis.exceptions import WatchError
+
 from redis_shard.shard import RedisShardAPI
 from redis_shard._compat import b
 from .config import settings
@@ -43,6 +46,37 @@ class TestShard(unittest.TestCase):
         eq_(self.client.get('test'), b'3')
         eq_(self.client.zscore('testzset', 'first'), 5.0)
         eq_(self.client.zscore('testzset', 'second'), 5.0)
+
+        with self.client.pipeline() as pipe:
+            pipe.watch('test')
+            pipe.incr('test')
+            pipe.execute()
+        eq_(self.client.get('test'), b'4')
+
+        with self.client.pipeline() as pipe:
+            pipe.watch('test')
+            pipe.incr('test')
+            self.client.decr('test')
+            self.assertRaises(WatchError, pipe.execute)
+        eq_(self.client.get('test'), b'3')
+
+        keys_of_names = {}
+        with self.client.pipeline() as pipe:
+            for key in xrange(100):
+                name = pipe.shard_api.get_server_name(key)
+                if name not in keys_of_names:
+                    keys_of_names[name] = key
+                else:
+                    key1 = key
+                    key2 = keys_of_names[name]
+
+                    pipe.watch(key1, key2)
+                    pipe.set(key1, 1)
+                    pipe.set(key2, 2)
+                    pipe.execute()
+
+                    eq_(self.client.get(key1), b'1')
+                    eq_(self.client.get(key2), b'2')
 
     def test_pipeline_script(self):
         pipe = self.client.pipeline()

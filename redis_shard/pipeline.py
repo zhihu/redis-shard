@@ -1,6 +1,5 @@
 
 import functools
-
 from .commands import SHARD_METHODS
 from ._compat import basestring, dictvalues, itervalues
 
@@ -12,6 +11,7 @@ class Pipeline(object):
         self.pipelines = {}
         self.__counter = 0
         self.__indexes = {}
+        self.__watching = None
         self.shard_api._build_pool()
 
     def get_pipeline(self, key):
@@ -80,7 +80,7 @@ class Pipeline(object):
 
     def __unit_execute(self, pipeline):
         result = pipeline.execute()
-        return zip(self.__indexes.get(pipeline, []), result)
+        return zip(self.__indexes[pipeline], result)
 
     def __getattr__(self, method):
         if method in SHARD_METHODS:
@@ -93,12 +93,43 @@ class Pipeline(object):
             raise NotImplementedError(
                 "method '%s' cannot be pipelined" % method)
 
+    def watch(self, *keys):
+        if not keys:
+            return
+
+        watching_server_name = self.__watching
+        for key in keys:
+            name = self.shard_api.get_server_name(key)
+            if watching_server_name is None:
+                self.__watching = watching_server_name = name
+            elif watching_server_name != name:
+                raise ValueError('Cannot watch keys in different redis instances')
+
+        pipeline = self.get_pipeline(name)
+        return pipeline.watch(*keys)
+
+    def multi(self):
+        if self.__watching:
+            pipeline = self.get_pipeline(self.__watching)
+            pipeline.multi()
+        else:
+            for pipeline in itervalues(self.pipelines):
+                pipeline.multi()
+
     def reset(self):
-        for pipeline in itervalues(self.pipelines):
+        if self.__watching:
+            pipeline = self.get_pipeline(self.__watching)
             try:
                 pipeline.reset()
             except Exception:
                 pass
+            self.__watching = None
+        else:
+            for pipeline in itervalues(self.pipelines):
+                try:
+                    pipeline.reset()
+                except Exception:
+                    pass
 
     def __enter__(self):
         return self
