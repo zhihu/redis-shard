@@ -31,8 +31,8 @@ class TestShard(unittest.TestCase):
         pipe.execute()
         pipe.reset()
         eq_(self.client.get('test'), '2')
-        eq_(self.client.zscore('testzset', 'first'), '3.0')
-        eq_(self.client.zscore('testzset', 'second'), '2')
+        eq_(self.client.zscore('testzset', 'first'), 2.0)
+        eq_(self.client.zscore('testzset', 'second'), 2.0)
 
         with self.client.pipeline() as pipe:
             pipe.set('test', '3')
@@ -41,8 +41,8 @@ class TestShard(unittest.TestCase):
             pipe.zadd('testzset', 'second', 5)
             pipe.execute()
         eq_(self.client.get('test'), '3')
-        eq_(self.client.zscore('testzset', 'first'), '5.0')
-        eq_(self.client.zscore('testzset', 'second'), '5')
+        eq_(self.client.zscore('testzset', 'first'), 5.0)
+        eq_(self.client.zscore('testzset', 'second'), 5.0)
 
     def test_pipeline_script(self):
         pipe = self.client.pipeline()
