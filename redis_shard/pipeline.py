@@ -1,5 +1,7 @@
 
 import functools
+import logging
+
 from .commands import SHARD_METHODS
 from ._compat import basestring, dictvalues
 
@@ -11,6 +13,7 @@ class Pipeline(object):
         self.pipelines = {}
         self.__counter = 0
         self.__indexes = {}
+        self.__watching = None
         self.shard_api._build_pool()
 
     def get_pipeline(self, key):
@@ -63,19 +66,22 @@ class Pipeline(object):
         return r
 
     def execute(self):
-        results = []
+        if self.__watching:
+            return self.pipelines[self.__watching].execute()
+        else:
+            results = []
 
-        # Pipeline concurrently
-        values = self.shard_api.pool.map(self.__unit_execute, dictvalues(self.pipelines))
-        for v in values:
-            results.extend(v)
+            # Pipeline concurrently
+            values = self.shard_api.pool.map(self.__unit_execute, dictvalues(self.pipelines))
+            for v in values:
+                results.extend(v)
 
-        self.__counter = 0
-        self.__indexes = {}
+            self.__counter = 0
+            self.__indexes = {}
 
-        results.sort(key=lambda x: x[0])
-        results = [r[1] for r in results]
-        return results
+            results.sort(key=lambda x: x[0])
+            results = [r[1] for r in results]
+            return results
 
     def __unit_execute(self, pipeline):
         result = pipeline.execute()
@@ -91,3 +97,54 @@ class Pipeline(object):
         else:
             raise NotImplementedError(
                 "method '%s' cannot be pipelined" % method)
+
+    def watch(self, *keys):
+        if not keys:
+            return
+
+        watching_server_name = self.__watching
+        if watching_server_name:
+            for key in keys:
+                name = self.shard_api.get_server_name(key)
+                if watching_server_name != name:
+                    raise ValueError('Cannot watch keys in different redis instances')
+        else:
+            for key in keys:
+                name = self.shard_api.get_server_name(key)
+                if watching_server_name is None:
+                    watching_server_name = name
+                elif watching_server_name != name:
+                    raise ValueError('Cannot watch keys in different redis instances')
+
+        pipeline = self.pipelines.get(watching_server_name)
+        if not pipeline:
+            pipeline = self.shard_api.connections[watching_server_name].pipeline()
+            self.pipelines[watching_server_name] = pipeline
+        r = pipeline.watch(*keys)
+        self.__watching = watching_server_name
+        return r
+
+    def multi(self):
+        if self.__watching:
+            pipeline = self.pipelines[self.__watching]
+            pipeline.multi()
+        else:
+            raise NotImplementedError('Cannot call MULTI in different redis instances')
+
+    def reset(self):
+        if self.__watching:
+            pipeline = self.pipelines[self.__watching]
+            try:
+                pipeline.reset()
+            except Exception:
+                logging.warning('failed to reset pipeline')
+            self.__watching = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.reset()
+
+    def __del__(self):
+        self.reset()
