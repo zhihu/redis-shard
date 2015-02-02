@@ -65,6 +65,14 @@ you want to use multi-keys command such as ``sinter``), you should use Hash Tags
 The string in a braces of a key is the Hash Tag of the key. The hash of a Hash Tag will be treated the hash of the key.
 So, keys ``foo``, ``bar{foo}`` and ``b{foo}ar`` will be sotred in the same node.
 
+Tag method
+~~~~~~~~~~~
+
+Just add ``tag_`` prefix, you can use any of the normal redis method on the same hash tag::
+
+    client.tag_mget("{user:1}question1", "{user:1}question2")
+    client.tag_delete("{user:1}question1", "{user:1}question2")
+
 
 Config Details
 --------------
