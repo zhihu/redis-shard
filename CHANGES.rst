@@ -1,3 +1,7 @@
+0.3.1 (2015-02-02)
+------------------
+- transaction support
+
 0.3.0 (2014-11-20)
 ------------------
 - shard key generate function now support **md5** and **sha1** .
