@@ -66,22 +66,25 @@ class Pipeline(object):
         return r
 
     def execute(self):
-        if self.__watching:
-            return self.pipelines[self.__watching].execute()
-        else:
-            results = []
+        try:
+            if self.__watching:
+                return self.pipelines[self.__watching].execute()
+            else:
+                results = []
 
-            # Pipeline concurrently
-            values = self.shard_api.pool.map(self.__unit_execute, dictvalues(self.pipelines))
-            for v in values:
-                results.extend(v)
+                # Pipeline concurrently
+                values = self.shard_api.pool.map(self.__unit_execute, dictvalues(self.pipelines))
+                for v in values:
+                    results.extend(v)
 
-            self.__counter = 0
-            self.__indexes = {}
+                self.__counter = 0
+                self.__indexes = {}
 
-            results.sort(key=lambda x: x[0])
-            results = [r[1] for r in results]
-            return results
+                results.sort(key=lambda x: x[0])
+                results = [r[1] for r in results]
+                return results
+        finally:
+            self.reset()
 
     def __unit_execute(self, pipeline):
         result = pipeline.execute()
