@@ -35,7 +35,7 @@ def list_or_args(keys, args):
 
 class RedisShardAPI(object):
 
-    def __init__(self, servers, hash_method='crc32', sentinel=None):
+    def __init__(self, servers, hash_method='crc32', sentinel=None, strict_redis=False):
         self.nodes = []
         self.connections = {}
         self.pool = None
@@ -48,6 +48,8 @@ class RedisShardAPI(object):
                 raise ValueError("server's name config must be unique")
             if sentinel:
                 self.connections[name] = SentinelRedis(sentinel, name)
+            elif strict_redis:
+                self.connections[name] = redis.StrictRedis(**server_config)
             else:
                 self.connections[name] = redis.Redis(**server_config)
             server_config['name'] = name
