@@ -2,4 +2,4 @@
 Based on this article: http://antirez.com/post/redis-presharding.html
 """
 
-__version__ = '0.3.1'
+__version__ = '0.3.2'
