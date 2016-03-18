@@ -38,4 +38,4 @@ def parse_url(url):
     return dict(host=host, port=port, password=password, db=db, **query)
 
 if __name__ == '__main__':
-    print parse_url('redis://127.0.0.1:6379/1?name=node2&max_connections=100')
+    print(parse_url('redis://127.0.0.1:6379/1?name=node2&max_connections=100'))
