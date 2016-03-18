@@ -1,3 +1,7 @@
+0.3.3 (2016-03-18)
+-------------------
+- max_connections can now be set when instantiating client instance, and has a default value 100.
+
 0.3.2 (2015-06-02)
 --------------------
 - add strict redis support

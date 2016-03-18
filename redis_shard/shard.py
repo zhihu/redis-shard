@@ -44,6 +44,7 @@ class RedisShardAPI(object):
             sentinel = Sentinel(sentinel['hosts'], socket_timeout=sentinel.get('socket_timeout', 1))
         for server_config in servers:
             name = server_config.pop('name')
+            server_config["max_connections"] = int(server_config.get("max_connections", 100))
             if name in self.connections:
                 raise ValueError("server's name config must be unique")
             if sentinel:

@@ -74,6 +74,11 @@ Just add ``tag_`` prefix, you can use any of the normal redis method on the same
     client.tag_delete("{user:1}question1", "{user:1}question2")
 
 
+Multi-keys method
+~~~~~~~~~~~~~~~~~~
+Only support ``mget``, ``mset`` and ``flushdb``.
+
+
 Config Details
 --------------
 There are three parameters ``servers``, ``hash_method`` and ``sentinel`` in the :class:`redis_shard.shard.RedisShardAPI`.
@@ -84,7 +89,7 @@ There are three parameters ``servers``, ``hash_method`` and ``sentinel`` in the 
 
     [
         {'name': 'server1', 'host': '127.0.0.1', 'port': 10000, 'db': 0},
-        {'name': 'server2', 'host': '127.0.0.1', 'port': 11000, 'db': 0},
+        {'name': 'server2', 'host': '127.0.0.1', 'port': 11000, 'db': 0, 'max_connections': 50},
         {'name': 'server3', 'host': '127.0.0.1', 'port': 12000, 'db': 0},
     ]
 
@@ -92,7 +97,7 @@ There are three parameters ``servers``, ``hash_method`` and ``sentinel`` in the 
 
     [
         'redis://127.0.0.1:10000/0?name=node1',
-        'redis://127.0.0.1:11000/0?name=node2',
+        'redis://127.0.0.1:11000/0?name=node2&max_connections=50',
         'redis://127.0.0.1:12000/0?name=node3'
     ]
 
@@ -113,7 +118,7 @@ Limitations
 ===========
 
 * Redis Shard dose not support all Redis commands.
-* As mentioned above, Redis Shard does not support multi-keys command crossing different nodes,
+* As mentioned above, Redis Shard does not support all multi-keys commands crossing different nodes,
   you have to use Hash Tag to work with those commands.
 * Redis Shard does not have any replication mechanism.
 

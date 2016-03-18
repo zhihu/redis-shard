@@ -36,3 +36,6 @@ def parse_url(url):
     scheme, host, port, user, password, db, query = _parse_url(url)
     assert scheme == 'redis'
     return dict(host=host, port=port, password=password, db=db, **query)
+
+if __name__ == '__main__':
+    print parse_url('redis://127.0.0.1:6379/1?name=node2&max_connections=100')
