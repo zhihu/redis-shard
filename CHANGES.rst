@@ -1,3 +1,7 @@
+0.3.4 (2016-07-19)
+------------------
+- fix md5 hash_method occus NameError on python3
+
 0.3.3 (2016-03-18)
 -------------------
 - max_connections can now be set when instantiating client instance, and has a default value 100.

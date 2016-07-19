@@ -15,6 +15,7 @@ class TestHashRing(unittest.TestCase):
         hash_ring_object = HashRing(
             nodes=["redis01", "redis02"],
             replicas=replicas,
+            hash_method='md5',
         )
         hash_ring_object.remove_node("redis01")
         eq_(hash_ring_object.nodes, ["redis02"])

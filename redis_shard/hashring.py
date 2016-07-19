@@ -11,7 +11,7 @@ import zlib
 import bisect
 from hashlib import md5, sha1
 
-from ._compat import xrange, b
+from ._compat import xrange, b, long
 
 
 hash_methods = {
