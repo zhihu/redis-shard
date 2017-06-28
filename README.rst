@@ -65,7 +65,7 @@ you want to use multi-keys command such as ``sinter``), you should use Hash Tags
 The string in a braces of a key is the Hash Tag of the key. The hash of a Hash Tag will be treated the hash of the key.
 So, keys ``foo``, ``bar{foo}`` and ``b{foo}ar`` will be sotred in the same node.
 
-..note:: Hash Tags are not supported with ``bytes`` keys in Python 3.
+.. note:: Hash Tags are not supported with ``bytes`` keys in Python 3.
 
 Tag method
 ~~~~~~~~~~~
