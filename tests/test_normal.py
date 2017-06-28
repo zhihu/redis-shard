@@ -63,3 +63,11 @@ class TestShard(unittest.TestCase):
         """)
         eq_(self.client.evalsha(sha, 1, 'test8', b('8')), b('OK'))
         eq_(self.client.get('test8'), b('8'))
+
+    def test_bytes_key(self):
+        sha = self.client.script_load("""
+            return redis.call('set', KEYS[1], ARGV[1])
+        """)
+        eq_(self.client.evalsha(sha, 1, b'test8', b('8')), b('OK'))
+        eq_(self.client.get(b'test8'), b('8'))
+

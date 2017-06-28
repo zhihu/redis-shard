@@ -48,8 +48,8 @@ else:
     imap = map
     izip = zip
     xrange = range
-    basestring = str
-    unicode = str
+    basestring = (str, bytes)
+    unicode = bytes
     bytes = bytes
     long = int
 
