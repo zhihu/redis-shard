@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 import re
 import functools
-import redis
+import sys
 from multiprocessing.dummy import Pool as ThreadPool
 
+import redis
 from redis.client import Lock
 from redis.sentinel import Sentinel
 
@@ -17,6 +18,7 @@ from .sentinel import SentinelRedis
 
 _findhash = re.compile('.*\{(.*)\}.*', re.I)
 
+_PYTHON3 = True if sys.version_info > (3, 0, 0) else False
 
 def list_or_args(keys, args):
     # returns a single list combining keys and args
@@ -58,9 +60,10 @@ class RedisShardAPI(object):
         self.ring = HashRing(self.nodes, hash_method=hash_method)
 
     def get_server_name(self, key):
-        g = _findhash.match(key)
-        if g is not None and len(g.groups()) > 0:
-            key = g.groups()[0]
+        if not _PYTHON3 and not isinstance(key, bytes):
+            g = _findhash.match(key)
+            if g is not None and len(g.groups()) > 0:
+                key = g.groups()[0]
         name = self.ring.get_node(key)
         return name
 
