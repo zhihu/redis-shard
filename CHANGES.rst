@@ -1,3 +1,8 @@
+0.3.5 (2017-10-25)
+------------------
+- Allow for bytes based keys in Python3 (@gmr)
+- Fix crc-32 calculation per Python
+
 0.3.4 (2016-07-19)
 ------------------
 - fix md5 hash_method occus NameError on python3

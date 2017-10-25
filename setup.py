@@ -11,6 +11,7 @@ def read_file(*path):
     file_path = (base_dir, ) + tuple(path)
     return open(os.path.join(*file_path)).read()
 
+
 setup(
     name="redis-shard",
     url="https://github.com/zhihu/redis-shard",
