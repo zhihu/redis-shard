@@ -15,7 +15,7 @@ from ._compat import xrange, b, long
 
 
 hash_methods = {
-    'crc32': zlib.crc32,
+    'crc32': lambda x: zlib.crc32(x) & 0xffffffff,
     'md5': lambda x: long(md5(x).hexdigest(), 16),
     'sha1': lambda x: long(sha1(x).hexdigest(), 16),
 }
