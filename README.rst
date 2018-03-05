@@ -5,15 +5,15 @@ Redis Shard
    :target: https://travis-ci.org/zhihu/redis-shard
    :alt: Build Status
 
-.. image:: https://pypip.in/version/redis-shard/badge.svg?style=flat
+.. image:: https://img.shields.io/pypi/v/redis-shard.svg?style=flat
     :target: https://pypi.python.org/pypi/redis-shard
     :alt: Latest Version
 
-.. image:: https://pypip.in/py_versions/redis-shard/badge.svg?style=flat
+.. image:: https://img.shields.io/pypi/pyversions/redis-shard.svg?style=flat
     :target: https://pypi.python.org/pypi/redis-shard
     :alt: Supported Python versions
 
-.. image:: https://pypip.in/license/redis-shard/badge.svg?style=flat
+.. image:: https://img.shields.io/pypi/l/redis-shard.svg?style=flat
     :target: https://pypi.python.org/pypi/redis-shard
     :alt: License
 
