@@ -7,7 +7,7 @@ except ImportError:
     # python3
     from urllib.parse import unquote
     from urllib.parse import urlparse
-    from cgi import parse_qsl  # noqa
+    from urllib.parse import parse_qsl
 
 
 def _parse_url(url):
