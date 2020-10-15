@@ -3,6 +3,7 @@
 import unittest
 from redis_shard.shard import RedisShardAPI
 from redis_shard._compat import b
+from redis import __version__ as REDIS_VERSION
 from nose.tools import eq_
 from .config import settings
 
@@ -27,8 +28,12 @@ class TestShard(unittest.TestCase):
         self.client.delete('test8')
 
     def test_zset(self):
-        self.client.zadd('testzset', 'first', 1)
-        self.client.zadd('testzset', 'second', 2)
+        if REDIS_VERSION.startswith('2.'):
+            self.client.zadd('testzset', 'first', 1)
+            self.client.zadd('testzset', 'second', 2)
+        else:
+            self.client.zadd('testzset', {'first': 1})
+            self.client.zadd('testzset', {'second': 2})
         self.client.zrange('testzset', 0, -1) == ['first', 'second']
 
     def test_list(self):

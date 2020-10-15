@@ -3,6 +3,7 @@
 import unittest
 
 from nose.tools import eq_
+from redis import __version__ as REDIS_VERSION
 from redis.exceptions import WatchError
 
 from redis_shard.shard import RedisShardAPI
@@ -28,9 +29,14 @@ class TestShard(unittest.TestCase):
         self.client.set('test', '1')
         pipe = self.client.pipeline()
         pipe.set('test', '2')
-        pipe.zadd('testzset', 'first', 1)
-        pipe.zincrby('testzset', 'first')
-        pipe.zadd('testzset', 'second', 2)
+        if REDIS_VERSION.startswith('2.'):
+            pipe.zadd('testzset', 'first', 1)
+            pipe.zincrby('testzset', 'first', 1)
+            pipe.zadd('testzset', 'second', 2)
+        else:
+            pipe.zadd('testzset', {'first': 1})
+            pipe.zincrby('testzset', 1, 'first')
+            pipe.zadd('testzset', {'second': 2})
         pipe.execute()
         pipe.reset()
         eq_(self.client.get('test'), b'2')
@@ -39,9 +45,14 @@ class TestShard(unittest.TestCase):
 
         with self.client.pipeline() as pipe:
             pipe.set('test', '3')
-            pipe.zadd('testzset', 'first', 4)
-            pipe.zincrby('testzset', 'first')
-            pipe.zadd('testzset', 'second', 5)
+            if REDIS_VERSION.startswith('2.'):
+                pipe.zadd('testzset', 'first', 4)
+                pipe.zincrby('testzset', 'first', 1)
+                pipe.zadd('testzset', 'second', 5)
+            else:
+                pipe.zadd('testzset', {'first': 4})
+                pipe.zincrby('testzset', 1, 'first')
+                pipe.zadd('testzset', {'second': 5})
             pipe.execute()
         eq_(self.client.get('test'), b'3')
         eq_(self.client.zscore('testzset', 'first'), 5.0)
