@@ -29,7 +29,7 @@ setup(
     packages=["redis_shard"],
     include_package_data=True,
     zip_safe=False,
-    install_requires=['redis>=2.10.5'],
+    install_requires=['redis>=2.10.6'],
     tests_require=['Nose'],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
