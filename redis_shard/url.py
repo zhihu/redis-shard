@@ -9,6 +9,8 @@ except ImportError:
     from urllib.parse import urlparse
     from urllib.parse import parse_qsl
 
+from redis.connection import URL_QUERY_ARGUMENT_PARSERS
+
 
 def _parse_url(url):
     scheme = urlparse(url).scheme
@@ -35,6 +37,10 @@ def _parse_url(url):
 def parse_url(url):
     scheme, host, port, user, password, db, query = _parse_url(url)
     assert scheme == 'redis'
+    for param, value in query.items():
+        if param in URL_QUERY_ARGUMENT_PARSERS:
+            parser = URL_QUERY_ARGUMENT_PARSERS[param]
+            query[param] = parser(value)
     return dict(host=host, port=port, password=password, db=db, **query)
 
 if __name__ == '__main__':
