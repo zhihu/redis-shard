@@ -30,7 +30,7 @@ setup(
     packages=["redis_shard"],
     include_package_data=True,
     zip_safe=False,
-    install_requires=['redis>=2.10.6'],
+    install_requires=['redis>=3.0.0'],
     tests_require=['Nose'],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -39,7 +39,7 @@ setup(
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.8",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: BSD License",
         "Topic :: Software Development :: Libraries",

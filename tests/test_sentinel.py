@@ -25,8 +25,8 @@ class TestSentinelShard(unittest.TestCase):
         self.client.delete('test8')
 
     def test_zset(self):
-        self.client.zadd('testzset', 'first', 1)
-        self.client.zadd('testzset', 'second', 2)
+        self.client.zadd('testzset', {'first': 1})
+        self.client.zadd('testzset', {'second': 2})
         self.client.zrange('testzset', 0, -1) == ['first', 'second']
 
     def test_list(self):

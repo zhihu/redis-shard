@@ -1,3 +1,9 @@
+0.3.6 (2020-10-15)
+------------------
+- Made Redis URL parsing smarter (@huntrax11 )
+- Compact with python 3.8
+- Compact with redis-py 3.0.0+
+
 0.3.5 (2017-10-25)
 ------------------
 - Allow for bytes based keys in Python3 (@gmr)
