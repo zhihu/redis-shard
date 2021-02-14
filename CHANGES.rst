@@ -1,3 +1,7 @@
+0.3.7 (2021-02-14)
+------------------
+- Fix hash tags
+
 0.3.6 (2020-10-15)
 ------------------
 - Made Redis URL parsing smarter (@huntrax11 )
