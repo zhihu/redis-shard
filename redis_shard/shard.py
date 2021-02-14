@@ -59,7 +59,7 @@ class RedisShardAPI(object):
         self.ring = HashRing(self.nodes, hash_method=hash_method)
 
     def get_server_name(self, key):
-        if not _PYTHON3 and not isinstance(key, bytes):
+        if not _PYTHON3 or not isinstance(key, bytes):
             g = _findhash.match(key)
             if g is not None and len(g.groups()) > 0:
                 key = g.groups()[0]
