@@ -83,7 +83,7 @@ Only support ``mget``, ``mset`` and ``flushdb``.
 
 Config Details
 --------------
-There are three parameters ``servers``, ``hash_method`` and ``sentinel`` in the :class:`redis_shard.shard.RedisShardAPI`.
+There are three parameters ``servers``, ``hash_method`` and ``sentinel`` in the class `redis_shard.shard.RedisShardAPI`.
 
 ``servers`` is a list.  Each element in it should be a dict or a URL schema.
 

@@ -24,7 +24,7 @@ setup(
     long_description=(
         read_file("README.rst") + "\n\n" +
         "Change History\n" +
-        "==============\n\n" +
+        "===============\n\n" +
         read_file("CHANGES.rst")),
     version=redis_shard.__version__,
     packages=["redis_shard"],
