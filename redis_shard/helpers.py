@@ -29,7 +29,7 @@ def format_servers(servers):
     if not isinstance(servers, list):
         raise ValueError("server's config must be list")
     _type = type(servers[0])
-    if _type == dict:
+    if isinstance(_type, dict):
         return servers
     if (sys.version_info[0] == 3 and _type in [str, bytes]) \
             or (sys.version_info[0] == 2 and _type in [str, unicode]):
